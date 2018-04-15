@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Quản lý thu chi cá nhân - IUH</string>
+    <string name="title_diary_nav">Nhật ký</string>
+    <string name="title_source_money_nav">Nguồn tiền</string>
+    <string name="title_plan_nav">Kế hoạch</string>
+    <string name="title_report_nav">Báo cáo</string>
+    <string name="title_more_nav">Khác</string>
+    <string name="loading">Loading…</string>
+    <string name="facebook_app_id">1790505444345652</string>
+    <string name="fb_login_protocol_scheme">fb1790505444345652</string>
+    <string name="login_with_google">Đăng nhập với Google</string>
+    <string name="login_with_facebook">Đăng nhập với Facebook</string>
+</resources>

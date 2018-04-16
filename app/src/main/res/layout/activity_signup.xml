@@ -88,7 +88,8 @@
                     android:layout_weight="1"
                     android:backgroundTint="@color/orange"
                     android:text="Hủy bỏ"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:drawableLeft="@drawable/ic_clear_white_24dp"/>
 
                 <Button
                     android:id="@+id/finish_signup_button"
@@ -97,7 +98,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Hoàn tất"
-                    android:textAllCaps="false" />
+                    android:textAllCaps="false"
+                    android:drawableLeft="@drawable/ic_done_white_24dp"/>
             </LinearLayout>
 
             <TextView

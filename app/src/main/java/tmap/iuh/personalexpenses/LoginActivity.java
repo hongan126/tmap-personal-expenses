@@ -3,7 +3,6 @@ package tmap.iuh.personalexpenses;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -30,20 +29,26 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import tmap.iuh.personalexpenses.models.User;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    // [START declare_auth]
+    // [START declare_auth_and_database]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
+    private DatabaseReference mDatabase;
+    // [END declare_auth_and_database]
 
     private GoogleSignInClient mGoogleSignInClient;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private CallbackManager mCallbackManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         findViewById(R.id.google_login_button).setOnClickListener(this);
         findViewById(R.id.signup_button).setOnClickListener(this);
 
+        // [START initialize_auth_and_database]
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        // [END initialize_auth_and_database]
+
         // [START config_signin]
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -72,10 +82,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // [END config_signin]
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // [START initialize_auth]
-        mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
 
         // [START initialize_fblogin]
         // Initialize Facebook Login button
@@ -258,8 +264,29 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         // [START_EXCLUDE]
         hideProgressDialog();
         // [END_EXCLUDE]
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        String username = getUsername(user);
+        // Write new user
+        writeNewUser(user.getUid(), username, user.getEmail());
+
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         finish();
+    }
+
+    // Get username
+    private String getUsername(FirebaseUser user) {
+        // TODO delete
+//        if(user.getDisplayName()!=null){
+//            return user.getDisplayName();
+//        }
+
+        String email = user.getEmail();
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
     }
 
     //Auth failed, display a message to the user.
@@ -273,6 +300,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         Toast.makeText(LoginActivity.this,
                 "Đăng nhập thất bại!\nVui lòng kiểm tra lại tài khoản, mật khẩu và kết nối mạng của bạn.",
                 Toast.LENGTH_LONG).show();
+    }
+
+    // Write database user info
+    private void writeNewUser(String userId, String name, String email) {
+        User user = new User(name, email);
+
+        mDatabase.child("users").child(userId).setValue(user);
     }
 
     @Override

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="tmap.iuh.personalexpenses.DiaryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightBlue"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel_nav_button_diary"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@drawable/ic_arrow_back_24dp"
+            android:gravity="center_vertical|start"
+            android:text="Hủy bỏ"
+            android:textAllCaps="false"
+            android:textColor="@color/deepOrange" />
+
+        <Button
+            android:id="@+id/finish_nav_button_diary"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableEnd="@drawable/ic_arrow_forward_24dp"
+            android:gravity="center_vertical|end"
+            android:text="Thêm"
+            android:textAllCaps="false"
+            android:textColor="@color/green" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_vertical_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Chi tiêu"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Switch
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Thu vào"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.support.design.widget.TextInputEditText
+                        android:id="@+id/amount_diary_edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Số tiền"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal"
+                        android:paddingLeft="12dp"
+                        android:textAlignment="textEnd"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="20sp"
+                        android:textStyle="bold">
+
+                        <requestFocus />
+                    </android.support.design.widget.TextInputEditText>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingTop="12dp"
+                    android:text="đ"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/category_diary_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            app:ms_alignLabels="true"
+            app:ms_enableErrorLabel="true"
+            app:ms_enableFloatingLabel="true"
+            app:ms_floatingLabelText="Danh mục:"
+            app:ms_hint="Chọn danh mục"
+            app:ms_multiline="false" />
+
+            <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.TextInputEditText
+            android:id="@+id/description_diary_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Mô tả"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:paddingLeft="12dp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/money_source_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            app:ms_alignLabels="true"
+            app:ms_enableErrorLabel="true"
+            app:ms_enableFloatingLabel="true"
+            app:ms_floatingLabelText="Từ:"
+            app:ms_hint="Chọn nguồn tiền"
+            app:ms_multiline="false" />
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/needed_level_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            app:ms_alignLabels="true"
+            app:ms_enableErrorLabel="true"
+            app:ms_enableFloatingLabel="true"
+            app:ms_floatingLabelText="Mức độ cần thiết:"
+            app:ms_hint="Chọn mức độ cần thiết"
+            app:ms_multiline="false" />
+
+            <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.TextInputEditText
+            android:id="@+id/date_diary_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ngày"
+            android:inputType="date"
+            android:paddingLeft="12dp"
+            android:focusable="false"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <!--<EditText-->
+                <!--android:id="@+id/amount_diary_edit_text"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:ems="10"-->
+                <!--android:gravity="end"-->
+                <!--android:hint="Số tiền"-->
+                <!--android:imeOptions="actionDone"-->
+                <!--android:inputType="numberDecimal"-->
+                <!--android:textSize="20sp">-->
+
+                <!--<requestFocus />-->
+            <!--</EditText>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingStart="3dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:text="Danh mục:"-->
+                <!--android:textColor="@color/gray"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--<Spinner-->
+                <!--android:id="@+id/category_diary_spinner"-->
+                <!--style="@style/FirebaseUI.CountrySpinner"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingLeft="3dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:text="Mô tả:"-->
+                <!--android:textColor="@color/gray"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/description_diary_edit_text"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:ems="10"-->
+                <!--android:imeOptions="actionDone"-->
+                <!--android:inputType="text" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingLeft="3dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:text="Từ:"-->
+                <!--android:textColor="@color/gray"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--<Spinner-->
+                <!--android:id="@+id/money_source_spinner"-->
+                <!--style="@style/Base.Widget.AppCompat.Spinner.Underlined"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingLeft="3dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:text="Mức độ cần thiết:"-->
+                <!--android:textColor="@color/gray"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--<Spinner-->
+                <!--android:id="@+id/needed_level_spinner"-->
+                <!--style="@style/FirebaseUI.CountrySpinner"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingStart="3dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:text="Ngày:"-->
+                <!--android:textColor="@color/gray"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/date_diary_edit_text"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:focusable="false"-->
+                <!--android:inputType="date"-->
+                <!--android:paddingLeft="12dp" />-->
+
+            <Button
+                android:id="@+id/add_diary_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableStart="@drawable/ic_add_white_24dp"
+                android:text="Thêm"
+                android:textAllCaps="false" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/cancel_diary_end_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/orange"
+                    android:drawableStart="@drawable/ic_delete_forever_white_24dp"
+                    android:text="Xóa"
+                    android:textAllCaps="false" />
+
+                <Button
+                    android:id="@+id/finish_diary_end_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_done_white_24dp"
+                    android:text="Hoàn tất"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

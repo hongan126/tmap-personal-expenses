@@ -7,7 +7,7 @@
         android:icon="@drawable/ic_nav_diary_24dp"
         android:title="@string/title_diary_nav" />
     <item
-        android:id="@+id/nav_source_money"
+        android:id="@+id/nav_money_source"
         android:icon="@drawable/ic_nav_source_money_24dp"
         android:title="@string/title_source_money_nav" />
     <item

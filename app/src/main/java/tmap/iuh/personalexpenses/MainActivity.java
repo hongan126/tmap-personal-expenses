@@ -16,7 +16,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
+import tmap.iuh.personalexpenses.fragment.DiaryMgnFragment;
+import tmap.iuh.personalexpenses.fragment.MoneySourceMgnFragment;
 import tmap.iuh.personalexpenses.fragment.MoreFuncFragment;
+import tmap.iuh.personalexpenses.fragment.PlanMgnFragment;
+import tmap.iuh.personalexpenses.fragment.ReportFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,20 +32,16 @@ public class MainActivity extends AppCompatActivity {
             Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.nav_diary:
-                    //Todo edit
-                    selectedFragment = new MoreFuncFragment();
+                    selectedFragment = new DiaryMgnFragment();
                     break;
-                case R.id.nav_source_money:
-                    // Todo edit
-                    selectedFragment = new MoreFuncFragment();
+                case R.id.nav_money_source:
+                    selectedFragment = new MoneySourceMgnFragment();
                     break;
                 case R.id.nav_plan:
-                    // Todo edit
-                    selectedFragment = new MoreFuncFragment();
+                    selectedFragment = new PlanMgnFragment();
                     break;
                 case R.id.nav_report:
-                    // Todo edit
-                    selectedFragment = new MoreFuncFragment();
+                    selectedFragment = new ReportFragment();
                     break;
                 case R.id.nav_more:
                     selectedFragment = new MoreFuncFragment();
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new MoreFuncFragment()).commit();
+                    new DiaryMgnFragment()).commit();
         }
     }
 
@@ -80,13 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // TODO start other activity
-                    }
-                });
+        mGoogleSignInClient.signOut();
 
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();

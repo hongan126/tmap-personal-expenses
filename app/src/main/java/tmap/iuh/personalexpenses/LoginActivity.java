@@ -3,6 +3,7 @@ package tmap.iuh.personalexpenses;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -32,6 +33,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.w3c.dom.Text;
+
 import tmap.iuh.personalexpenses.models.User;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -47,6 +50,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private GoogleSignInClient mGoogleSignInClient;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
+    private TextInputLayout mEmailTextInputLayout;
+    private TextInputLayout mPasswordTextInputLayout;
     private CallbackManager mCallbackManager;
 
 
@@ -62,6 +67,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         //View
         mEmailEditText = (EditText) findViewById(R.id.email_edit_text);
         mPasswordEditText = (EditText) findViewById(R.id.password_edit_text);
+        mEmailTextInputLayout = (TextInputLayout) findViewById(R.id.email_login_layout);
+        mPasswordTextInputLayout = (TextInputLayout) findViewById(R.id.password_login_layout);
 
         //Button listener
         findViewById(R.id.login_button).setOnClickListener(this);
@@ -241,20 +248,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         boolean valid = true;
 
         if (email.isEmpty()) {
-            mEmailEditText.setError("Không để trống!");
+            mEmailTextInputLayout.setError("Không để trống!");
             valid = false;
         } else if (!email.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
-            mEmailEditText.setError("Email không đúng!");
+            mEmailTextInputLayout.setError("Email không đúng!");
             valid = false;
         } else {
-            mEmailEditText.setError(null);
+            mEmailTextInputLayout.setError(null);
         }
 
         if (password.isEmpty()) {
-            mPasswordEditText.setError("Không để trống!");
+            mPasswordTextInputLayout.setError("Không để trống!");
             valid = false;
         } else {
-            mPasswordEditText.setError(null);
+            mPasswordTextInputLayout.setError(null);
         }
         return valid;
     }

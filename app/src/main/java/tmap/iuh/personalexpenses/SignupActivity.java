@@ -3,6 +3,7 @@ package tmap.iuh.personalexpenses;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +23,9 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private EditText mPassConfirmEditText;
+    private TextInputLayout mEmailEditLayout;
+    private TextInputLayout mPasswordEditLayout;
+    private TextInputLayout mPassConfirmEditLayout;
     private Button mFinishSignupButton;
     private Button mCancelButton;
 
@@ -38,6 +42,9 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
         mEmailEditText = (EditText) findViewById(R.id.signup_email_edit_text);
         mPassConfirmEditText = (EditText) findViewById(R.id.signup_password_confirm_edit_text);
         mPasswordEditText = (EditText) findViewById(R.id.signup_password_edit_text);
+        mEmailEditLayout = (TextInputLayout) findViewById(R.id.signup_email_layout);
+        mPassConfirmEditLayout = (TextInputLayout) findViewById(R.id.signup_password_confirm_layout);
+        mPasswordEditLayout = (TextInputLayout) findViewById(R.id.signup_password_layout);
 
         //Button Listener
         mFinishSignupButton = (Button) findViewById(R.id.finish_signup_button);
@@ -128,36 +135,36 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
     public boolean validateInput(String email, String password, String passConfirm) {
         boolean valid = true;
         if (email.isEmpty()) {
-            mEmailEditText.setError("Không để trống!");
+            mEmailEditLayout.setError("Không để trống!");
             valid = false;
         } else if (!email.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
-            mEmailEditText.setError("Email không đúng!");
+            mEmailEditLayout.setError("Email không đúng!");
             valid = false;
         } else {
-            mEmailEditText.setError(null);
+            mEmailEditLayout.setError(null);
         }
 
         if (password.isEmpty()) {
-            mPasswordEditText.setError("Không để trống!");
+            mPasswordEditLayout.setError("Không để trống!");
             valid = false;
         } else if (password.length() < 8) {
-            mPasswordEditText.setError("Tối thiểu 8 ký tự!");
+            mPasswordEditLayout.setError("Tối thiểu 8 ký tự!");
             valid = false;
         } else {
-            mPasswordEditText.setError(null);
+            mPasswordEditLayout.setError(null);
         }
 
         if (passConfirm.isEmpty()) {
-            mPassConfirmEditText.setError("Không để trống!");
+            mPassConfirmEditLayout.setError("Không để trống!");
             valid = false;
         } else if (passConfirm.length() < 8) {
-            mPassConfirmEditText.setError("Tối thiểu 8 ký tự!");
+            mPassConfirmEditLayout.setError("Tối thiểu 8 ký tự!");
             valid = false;
         } else if (!password.equals(passConfirm)) {
-            mPassConfirmEditText.setError("Mật khẩu không khớp!");
+            mPassConfirmEditLayout.setError("Mật khẩu không khớp!");
             valid = false;
         } else {
-            mPassConfirmEditText.setError(null);
+            mPassConfirmEditLayout.setError(null);
         }
 
         return valid;

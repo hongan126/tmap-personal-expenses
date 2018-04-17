@@ -16,8 +16,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
 
         </activity>
 
@@ -34,12 +34,12 @@
             </intent-filter>
         </activity>
 
-
         <!-- Facebook Configuration -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
             tools:replace="android:value" />
+
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -60,10 +60,19 @@
 
 
         <activity
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"
             android:name=".SignupActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan">
+
+        </activity>
+
+
+        <activity
+            android:name=".DiaryActivity"
             android:screenOrientation="portrait">
 
         </activity>
+
+
     </application>
 </manifest>

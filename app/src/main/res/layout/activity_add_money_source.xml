@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_vertical_margin"
+    tools:context="tmap.iuh.personalexpenses.AddMoneySourceActivity">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_moneysrc_name_edt_addms"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/moneysrc_name_edt_addms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tên nguồn tiền"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_first_balance_edt_addms"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/first_balance_edt_addms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Số tiền ban đầu"
+            android:inputType="numberDecimal" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel_add_moneysrc_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/orange"
+            android:drawableLeft="@drawable/ic_clear_white_24dp"
+            android:text="Hủy bỏ"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/finish_add_moneysrc_button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorAccent"
+            android:drawableLeft="@drawable/ic_done_white_24dp"
+            android:text="Hoàn tất"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</LinearLayout>

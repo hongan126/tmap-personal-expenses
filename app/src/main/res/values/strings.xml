@@ -5,6 +5,7 @@
     <string name="title_plan_nav">Kế hoạch</string>
     <string name="title_report_nav">Báo cáo</string>
     <string name="title_more_nav">Khác</string>
+    <string name="title_add_money_source">Thêm nguồn tiền</string>
     <string name="loading">Loading…</string>
     <string name="facebook_app_id">1790505444345652</string>
     <string name="fb_login_protocol_scheme">fb1790505444345652</string>
@@ -16,5 +17,12 @@
         <item>Tháng này</item>
         <item>Tất cả</item>
     </string-array>
+
+    <string name="remove_ms_title">Xóa nguồn tiền</string>
+    <string name="remove_ms_message">Lưu ý:\nNếu xóa tài khoản này, các nhật ký ghi chép liên quan sẽ bị xóa.\nBạn chắc chắn muốn xóa?</string>
+    <string name="remove_ms_cancel">Hủy bỏ</string>
+    <string name="remove_ms_remove">Vẫn xóa</string>
+
+    <string name="hide_balance_str">********đ</string>
 
 </resources>

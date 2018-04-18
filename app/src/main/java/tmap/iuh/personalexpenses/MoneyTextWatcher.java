@@ -30,10 +30,18 @@ public class MoneyTextWatcher implements TextWatcher {
         EditText editText = editTextWeakReference.get();
         if (editText == null) return;
         String s = editable.toString();
-        if(s.equals("")) return;
+        if (s.equals("")) return;
         editText.removeTextChangedListener(this);
         String cleanString = s.toString().replaceAll("[$,.]", "");
-        long longval = Long.parseLong(cleanString);
+        long longval;
+        try {
+            longval = Long.parseLong(cleanString);
+        } catch (Exception e) {
+            e.printStackTrace();
+            cleanString = cleanString.substring(0, cleanString.length() - 1);
+            longval = Long.parseLong(cleanString);
+        }
+
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
         formatter.applyPattern("#,###,###,###");
         String formattedString = formatter.format(longval);

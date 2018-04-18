@@ -8,4 +8,42 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.SpinnerRight">
+        <item name="android:spinnerItemStyle">@style/SpinnerItemRight</item>
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemRight</item>
+    </style>
+
+    <style name="SpinnerItemRight">
+        <item name="android:gravity">right|center_vertical</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="SpinnerDropDownItemRight">
+        <item name="android:gravity">center|center_vertical</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="AppTheme.SpinnerCenter">
+        <item name="android:spinnerItemStyle">@style/SpinnerItemCenter</item>
+        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemCenter</item>
+    </style>
+
+    <style name="SpinnerItemCenter">
+        <item name="android:gravity">center|center_vertical</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="SpinnerDropDownItemCenter">
+        <item name="android:gravity">center|center_vertical</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
 </resources>

@@ -12,16 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -39,7 +33,6 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
             tools:replace="android:value" />
-
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -63,16 +56,21 @@
             android:name=".SignupActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan">
-
         </activity>
 
-
         <activity
-            android:name=".DiaryActivity"
+            android:name=".DiaryCrudActivity"
             android:screenOrientation="portrait">
+        </activity>
 
+        <activity android:name=".AddMoneySourceActivity"
+            android:label="@string/title_add_money_source"
+            android:minWidth="300dp"
+            android:layout_width="match_parent"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" >
         </activity>
 
 
     </application>
+
 </manifest>

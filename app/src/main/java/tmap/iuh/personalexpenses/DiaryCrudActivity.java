@@ -87,7 +87,6 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                // TODO Auto-generated method stub
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -101,6 +100,7 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
                         myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        //Set date now Todo edit
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         mExpenseDate.setText(df.format(Calendar.getInstance().getTime()));
         //[END create date picker]
@@ -126,11 +126,11 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
         setAddDiaryActivity(false);
 
         //TextView
-        mExpenseTextView = (TextView)findViewById(R.id.expense_type_text_view);
-        mIncomTextView = (TextView)findViewById(R.id.income_type_text_view);
+        mExpenseTextView = (TextView) findViewById(R.id.expense_type_text_view);
+        mIncomTextView = (TextView) findViewById(R.id.income_type_text_view);
 
         //Switch
-        mTypeLogSwitch = (Switch)findViewById(R.id.type_of_expense_log_switch);
+        mTypeLogSwitch = (Switch) findViewById(R.id.type_of_expense_log_switch);
         mTypeLogSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -188,7 +188,7 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
 
     public void setAddDiaryActivity(boolean addDiaryActivity) {
         isAddDiaryActivity = addDiaryActivity;
-        if(isAddDiaryActivity){
+        if (isAddDiaryActivity) {
             mFinishNavBtn.setText("Thêm");
             mAddEndBtn.setVisibility(View.VISIBLE);
             mDeleteEndBtn.setVisibility(View.GONE);
@@ -207,13 +207,13 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
 
     public void setIncomeDiary(boolean incomeDiary) {
         isIncomeDiary = incomeDiary;
-        if(isIncomeDiary()) {
+        if (isIncomeDiary()) {
             mExpenseTextView.setTextColor(getResources().getColor(R.color.lightGray));
             mExpenseTextView.setTypeface(Typeface.DEFAULT);
             mIncomTextView.setTextColor(getResources().getColor(R.color.colorAccent));
             mIncomTextView.setTypeface(Typeface.DEFAULT_BOLD);
             mAmountOfMoney.setTextColor(getResources().getColor(R.color.colorAccent));
-        } else{
+        } else {
             mExpenseTextView.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
             mExpenseTextView.setTypeface(Typeface.DEFAULT_BOLD);
             mIncomTextView.setTextColor(getResources().getColor(R.color.lightGray));

@@ -6,6 +6,7 @@
     <string name="title_report_nav">Báo cáo</string>
     <string name="title_more_nav">Khác</string>
     <string name="title_add_money_source">Thêm nguồn tiền</string>
+    <string name="title_add_plan_activity">Thêm kế hoạch</string>
     <string name="loading">Loading…</string>
     <string name="facebook_app_id">1790505444345652</string>
     <string name="fb_login_protocol_scheme">fb1790505444345652</string>

@@ -15,7 +15,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -51,7 +51,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait"
@@ -63,14 +62,18 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".AddMoneySourceActivity"
-            android:label="@string/title_add_money_source"
-            android:minWidth="300dp"
+        <activity
+            android:name=".AddMoneySourceActivity"
             android:layout_width="match_parent"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+            android:label="@string/title_add_money_source"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
         </activity>
 
-
+        <activity
+            android:name=".PlanCrupActivity"
+            android:label="@string/title_add_plan_activity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+        </activity>
     </application>
 
 </manifest>

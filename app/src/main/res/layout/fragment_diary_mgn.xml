@@ -119,14 +119,14 @@
             android:layout_height="wrap_content" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/expense_log_list"
+            android:id="@+id/diary_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:clipToPadding="false"
             android:padding="5dp"
             android:scrollbars="vertical"
-            tools:listitem="@layout/item_expense_log" />
+            tools:listitem="@layout/item_diary" />
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

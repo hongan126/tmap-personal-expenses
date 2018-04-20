@@ -12,14 +12,12 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import tmap.iuh.personalexpenses.fragment.DiaryMgnFragment;
 import tmap.iuh.personalexpenses.fragment.MoneySourceMgnFragment;
 import tmap.iuh.personalexpenses.fragment.MoreFuncFragment;
-import tmap.iuh.personalexpenses.fragment.PlanMgnFragment;
+import tmap.iuh.personalexpenses.fragment.PlanSavingMoneyMgnFragment;
 import tmap.iuh.personalexpenses.fragment.ReportFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new MoneySourceMgnFragment();
                     break;
                 case R.id.nav_plan:
-                    selectedFragment = new PlanMgnFragment();
+                    selectedFragment = new PlanSavingMoneyMgnFragment();
                     break;
                 case R.id.nav_report:
                     selectedFragment = new ReportFragment();

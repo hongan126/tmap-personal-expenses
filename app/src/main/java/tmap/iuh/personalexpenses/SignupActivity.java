@@ -89,7 +89,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(SignupActivity.this, "Quá trình đăng ký đã thất bại!\nVui lòng kiểm tra lại kết nối mạng.",
+                                Toast.makeText(SignupActivity.this, "Quá trình đăng ký đã thất bại!\nCó thể email đã được đăng ký!\nVui lòng kiểm tra lại kết nối mạng.",
                                         Toast.LENGTH_LONG).show();
                             }
                             // [START_EXCLUDE]

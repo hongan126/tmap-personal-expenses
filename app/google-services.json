@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "225389261365-uej69nleubbfj1pkuns2pg4lh1jgnqnc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tmap.iuh.personalexpenses",
+            "certificate_hash": "c8c4ea4bbd7be83e51e75ff87455220c313c4bc4"
+          }
+        },
+        {
           "client_id": "225389261365-f3pjjd14gdh7jdkfuqh3mgavb9cuccf3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

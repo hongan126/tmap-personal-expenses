@@ -11,7 +11,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".AppDatabaseOffline">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -50,30 +51,23 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan">
-        </activity>
-
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"></activity>
         <activity
             android:name=".DiaryCrudActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".AddMoneySourceActivity"
             android:layout_width="match_parent"
             android:label="@string/title_add_money_source"
-            android:theme="@style/Theme.AppCompat.Light.Dialog">
-        </activity>
-
+            android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
         <activity
             android:name=".PlanCrupActivity"
             android:label="@string/title_add_plan_activity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+        <activity android:name=".DetailsReportActivity"></activity>
     </application>
 
 </manifest>

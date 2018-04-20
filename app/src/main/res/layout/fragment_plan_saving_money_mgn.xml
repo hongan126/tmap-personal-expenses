@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="56dp"
-    tools:context="tmap.iuh.personalexpenses.fragment.PlanMgnFragment">
+    tools:context="tmap.iuh.personalexpenses.fragment.PlanSavingMoneyMgnFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

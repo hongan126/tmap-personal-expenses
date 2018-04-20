@@ -19,6 +19,39 @@
         <item>Tất cả</item>
     </string-array>
 
+    <string-array name="needed_level">
+        <item>Cần thiết</item>
+        <item>Không cần thiết lắm</item>
+        <item>Không có cũng không sao</item>
+    </string-array>
+
+    <!--Todo remove-->
+    <string-array name="source_money">
+        <item>Ví</item>
+        <item>Tiết kiệm</item>
+    </string-array>
+
+    <string-array name="expense_category">
+        <item>Ăn uống</item>
+        <item>Dịch vụ sinh hoạt</item>
+        <item>Đi lại</item>
+        <item>Phát triển bản thân</item>
+        <item>Nhà cửa</item>
+        <item>Trang phục</item>
+        <item>Hưởng thụ</item>
+        <item>Hiếu hỉ</item>
+        <item>Sức khỏe</item>
+        <item>Con cái</item>
+        <item>Khác</item>
+    </string-array>
+
+    <string-array name="income_category">
+        <item>Lương</item>
+        <item>Thưởng</item>
+        <item>Được cho/tặng</item>
+        <item>Khác</item>
+    </string-array>
+
     <string name="remove_ms_title">Xóa nguồn tiền</string>
     <string name="remove_ms_message">Lưu ý:\nNếu xóa tài khoản này, các nhật ký ghi chép liên quan sẽ bị xóa.\nBạn chắc chắn muốn xóa?</string>
     <string name="remove_ms_cancel">Hủy bỏ</string>
@@ -26,4 +59,6 @@
 
     <string name="hide_balance_str">********đ</string>
 
+    <string name="income_type">Thu</string>
+    <string name="expense_type">Chi</string>
 </resources>

@@ -2,8 +2,9 @@ package tmap.iuh.personalexpenses;
 
 import android.app.DatePickerDialog;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,17 +13,30 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
+import tmap.iuh.personalexpenses.models.Diary;
+import tmap.iuh.personalexpenses.models.User;
 
-public class DiaryCrudActivity extends AppCompatActivity implements View.OnClickListener {
+public class DiaryCrudActivity extends BaseActivity implements View.OnClickListener {
+
+    private static final String TAG = "DiaryCrudActivity";
 
     private ArrayAdapter<String> categoryArrayAdapter;
     private MaterialSpinner categorySpinner;
@@ -35,6 +49,7 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
 
     private EditText mExpenseDate;
     private EditText mAmountOfMoney;
+    private TextInputLayout mAmountOfMoneyLayout;
     private EditText mDescription;
     private Calendar myCalendar = Calendar.getInstance();
 
@@ -55,6 +70,9 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
     private boolean isIncomeDiary;
     private boolean isAddDiaryActivity;
 
+    // [START declare_database_ref]
+    private DatabaseReference mDatabase;
+    // [END declare_database_ref]
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,19 +82,19 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
         mDescription = (EditText) findViewById(R.id.description_diary_edit_text);
 
         //Set Array Adapter for Category Spinner
-        categoryArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.diary_filter));
+        categoryArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.expense_category));
         categoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner = (MaterialSpinner) findViewById(R.id.category_diary_spinner);
         categorySpinner.setAdapter(categoryArrayAdapter);
 
         //Set Array Adapter for Money Source Spinner
-        moneySourceArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.diary_filter));
+        moneySourceArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.source_money));
         moneySourceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         moneySourceSpinner = (MaterialSpinner) findViewById(R.id.money_source_spinner);
         moneySourceSpinner.setAdapter(moneySourceArrayAdapter);
 
         //Set Array Adapter for Needed level Spinner
-        neededLevelArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.diary_filter));
+        neededLevelArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.needed_level));
         neededLevelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         neededLevelSpinner = (MaterialSpinner) findViewById(R.id.needed_level_spinner);
         neededLevelSpinner.setAdapter(neededLevelArrayAdapter);
@@ -109,6 +127,8 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
         mAmountOfMoney = (EditText) findViewById(R.id.amount_diary_edit_text);
         mAmountOfMoney.addTextChangedListener(new MoneyTextWatcher(mAmountOfMoney));
         //[END View Amount Of Money]
+        mAmountOfMoneyLayout = (TextInputLayout)findViewById(R.id.layout_amount_diary_edit_text);
+
 
         //Button add Listener
         mCancelNavBtn = (Button) findViewById(R.id.cancel_diarycrud_nav_button);
@@ -122,8 +142,14 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
         mDeleteEndBtn.setOnClickListener(this);
         mUpdateEndBtn.setOnClickListener(this);
 
+        // [START initialize_database_ref]
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        //For offline
+        mDatabase.keepSynced(true);
+        // [END initialize_database_ref]
+
         //Set type of Diary Activity Todo edit or remove
-        setAddDiaryActivity(false);
+        setAddDiaryActivity(true);
 
         //TextView
         mExpenseTextView = (TextView) findViewById(R.id.expense_type_text_view);
@@ -169,6 +195,11 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.add_diarycrud_end_button:
                 //Todo add action
+                Diary diary = getDiaryFromLayout();
+                if (diary == null) {
+                    break;
+                }
+                submitDiary(diary);
                 finish();
                 break;
             case R.id.delete_diarycrud_end_button:
@@ -220,5 +251,102 @@ public class DiaryCrudActivity extends AppCompatActivity implements View.OnClick
             mIncomTextView.setTypeface(Typeface.DEFAULT);
             mAmountOfMoney.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+    }
+
+    public void submitDiary(final Diary diary) {
+
+        // [START single_value_read]
+        final String userId = getUid();
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            // User is null, error out
+                            Log.e(TAG, "User " + userId + " is unexpectedly null");
+                            Toast.makeText(DiaryCrudActivity.this,
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Write new post
+                            String key = mDatabase.child("diary").push().getKey();
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/user-diary/" + userId + "/" + key, diary.toMap());
+                            mDatabase.updateChildren(childUpdates);
+                        }
+
+                        // Finish this Activity, back to the stream
+                        finish();
+                        // [END_EXCLUDE]
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+        // [END single_value_read]
+    }
+
+    private boolean validateInput(String amount, int category, int moneySource, int needLevel) {
+        boolean valid = true;
+
+        if (amount.isEmpty()) {
+            mAmountOfMoneyLayout.setError("Không để trống.");
+            valid = false;
+        } else if (getAmountOfMoney() <= 0) {
+            mAmountOfMoneyLayout.setError("Số tiền phải lớn hơn 0.");
+            valid = false;
+        } else {
+            mAmountOfMoneyLayout.setError(null);
+        }
+
+        if (category <= 0) {
+            categorySpinner.setError("Vui lòng chọn một danh mục.");
+            valid = false;
+        } else {
+            categorySpinner.setError(null);
+        }
+
+        if (moneySource <= 0) {
+            moneySourceSpinner.setError("Vui lòng chọn nguồn tiền.");
+            valid = false;
+        } else {
+            moneySourceSpinner.setError(null);
+        }
+
+        if (needLevel <= 0) {
+            neededLevelSpinner.setError("Vui lòng chọn mức độ cần thiết.");
+            valid = false;
+        } else {
+            neededLevelSpinner.setError(null);
+        }
+
+        return valid;
+    }
+
+    private Diary getDiaryFromLayout() {
+        String amount = mAmountOfMoney.getText().toString();
+        int categoryPos = categorySpinner.getSelectedItemPosition();
+        int moneySourcePos = moneySourceSpinner.getSelectedItemPosition();
+        int needLevelPos = neededLevelSpinner.getSelectedItemPosition();
+        String date = mExpenseDate.getText().toString();
+        if (!validateInput(amount, categoryPos, moneySourcePos, needLevelPos)) {
+            return null;
+        }
+
+        String category = categoryArrayAdapter.getItem(categoryPos-1);
+        String moneySource = moneySourceArrayAdapter.getItem(moneySourcePos-1);
+        String needLevel = neededLevelArrayAdapter.getItem(needLevelPos-1);
+        String description = mDescription.getText().toString();
+        String typeLog = getResources().getString(R.string.expense_type);
+        if (isIncomeDiary()) {
+            typeLog = getResources().getString(R.string.income_type);
+        }
+        return new Diary(getUid(), moneySource, getAmountOfMoney(), category, description, needLevel, typeLog, date);
     }
 }

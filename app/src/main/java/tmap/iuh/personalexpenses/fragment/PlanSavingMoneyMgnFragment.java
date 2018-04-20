@@ -14,10 +14,10 @@ import tmap.iuh.personalexpenses.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PlanMgnFragment extends Fragment {
+public class PlanSavingMoneyMgnFragment extends Fragment {
 
 
-    public PlanMgnFragment() {
+    public PlanSavingMoneyMgnFragment() {
         // Required empty public constructor
     }
 
@@ -25,7 +25,7 @@ public class PlanMgnFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_plan_mgn, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_plan_saving_money_mgn, container, false);
 
         rootView.findViewById(R.id.fab_new_plan).setOnClickListener(new View.OnClickListener() {
             @Override

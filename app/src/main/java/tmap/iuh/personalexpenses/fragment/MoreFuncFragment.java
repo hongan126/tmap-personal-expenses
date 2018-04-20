@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import tmap.iuh.personalexpenses.MainActivity;
 import tmap.iuh.personalexpenses.R;
@@ -31,6 +34,8 @@ public class MoreFuncFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_more_func, container, false);
+
+        ((TextView)rootView.findViewById(R.id.user_email_more_text_view)).setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         //Button Listener
         mLogout = (Button)rootView.findViewById(R.id.logout_button);

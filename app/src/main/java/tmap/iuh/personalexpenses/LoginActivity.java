@@ -30,11 +30,18 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -310,10 +317,38 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     // Write database user info
-    private void writeNewUser(String userId, String name, String email) {
-        User user = new User(name, email);
+    private void writeNewUser(final String userId, final String name, final String email) {
+        // [START single_value_read]
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
 
-        mDatabase.child("users").child(userId).setValue(user);
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            User newUser = new User(name, email);
+                            mDatabase.child("users").child(userId).setValue(newUser);
+                            
+                            String walletMsKey = mDatabase.child("money-source").push().getKey();
+                            MoneySource walletMs = new MoneySource(userId, getResources().getString(R.string.wallet_money_source), 0, walletMsKey);
+                            String savingMsKey = mDatabase.child("money-source").push().getKey();
+                            MoneySource savingMs = new MoneySource(userId, getResources().getString(R.string.saving_money_source), 0, savingMsKey);
+
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/user-money-source/" + userId + "/" + walletMsKey, walletMs.toMap());
+                            childUpdates.put("/user-money-source/" + userId + "/" + savingMsKey, savingMs.toMap());
+                            mDatabase.updateChildren(childUpdates);
+                        } 
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+        // [END single_value_read]
     }
 
     @Override

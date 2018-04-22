@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background_3"
         android:orientation="vertical"
         android:paddingBottom="0dp"
         android:paddingLeft="@dimen/activity_vertical_margin"
@@ -34,7 +35,7 @@
                 android:gravity="fill_vertical"
                 android:paddingLeft="3dp"
                 android:paddingRight="6dp"
-                android:text="Số dư:" />
+                android:text="Tổng số dư:" />
 
             <TextView
                 android:id="@+id/balance_diary_text_view"
@@ -42,7 +43,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="right|fill_vertical"
-                android:text="500.000đ"
+                android:text="0đ"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -75,7 +76,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="right|fill_vertical"
-                android:text="500.000đ"
+                android:text="0đ"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -107,7 +108,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="right|fill_vertical"
-                android:text="500.000đ"
+                android:text="0đ"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -124,7 +125,6 @@
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:clipToPadding="false"
-            android:padding="5dp"
             android:scrollbars="vertical"
             tools:listitem="@layout/item_diary" />
     </LinearLayout>

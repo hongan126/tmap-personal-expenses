@@ -10,6 +10,11 @@
     <color name="gray">#616161</color>
     <color name="darkGray">#3e3e3e</color>
     <color name="lightBlue">#e3f2fd</color>
+    <color name="colorPrimaryOpacity">#593f51b5</color>
+    <color name="whiteOpacity35">#59ffffff</color>
+    <color name="whiteOpacity45">#73ffffff</color>
+    <color name="whiteOpacity50">#80ffffff</color>
+    <color name="whiteOpacity60">#99ffffff</color>
     <color name="green">#2e7d32</color>
     <color name="lightGray">#e0e0e0</color>
 </resources>

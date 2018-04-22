@@ -32,7 +32,7 @@ public class DiaryViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindToDiary(Diary diary) {
-        date.setText(diary.date);
+        date.setText(diary.date.get("init_date").toString());
         typeDiary.setText(diary.type + ": ");
         category.setText(diary.category);
         description.setText(diary.description);

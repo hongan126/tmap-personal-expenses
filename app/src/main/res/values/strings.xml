@@ -61,4 +61,10 @@
 
     <string name="income_type">Thu</string>
     <string name="expense_type">Chi</string>
+
+    <string name="menu_remove">Xóa</string>
+    <string name="menu_transfer">Chuyển khoản</string>
+
+    <string name="wallet_money_source">Ví</string>
+    <string name="saving_money_source">Tiết kiệm</string>
 </resources>

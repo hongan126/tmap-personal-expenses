@@ -15,6 +15,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import tmap.iuh.personalexpenses.models.MoneySource;
+import tmap.iuh.personalexpenses.models.User;
 
 public class SignupActivity extends BaseActivity implements View.OnClickListener {
 
@@ -29,9 +40,10 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
     private Button mFinishSignupButton;
     private Button mCancelButton;
 
-    // [START declare_auth]
+    // [START declare_auth_and_database]
     private FirebaseAuth mAuth;
-    // [END declare_auth]
+    private DatabaseReference mDatabase;
+    // [END declare_auth_and_database]
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +64,10 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
         mFinishSignupButton.setOnClickListener(this);
         mCancelButton.setOnClickListener(this);
 
-        // [START initialize_auth]
+        // [START initialize_auth_and_database]
         mAuth = FirebaseAuth.getInstance();
-        // [END initialize_auth]
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        // [END initialize_auth_and_database]
     }
 
     @Override
@@ -81,6 +94,12 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                             if (task.isSuccessful()) {
                                 // Sign in success, start Main Functional Screen
                                 Log.d(TAG, "createUserWithEmail:success");
+
+                                // Write new user
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                String username = getUsername(user);
+                                writeNewUser(user.getUid(), username, user.getEmail());
+
                                 sendEmailVerification();
                                 Toast.makeText(SignupActivity.this, "Tạo tài khoản thành công.",
                                         Toast.LENGTH_LONG).show();
@@ -174,5 +193,55 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
     public void onBackPressed() {
         startActivity(new Intent(SignupActivity.this, LoginActivity.class));
         finish();
+    }
+
+    // Write database user info
+    private void writeNewUser(final String userId, final String name, final String email) {
+        // [START single_value_read]
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            User newUser = new User(name, email);
+                            mDatabase.child("users").child(userId).setValue(newUser);
+
+                            String walletMsKey = mDatabase.child("money-source").push().getKey();
+                            MoneySource walletMs = new MoneySource(userId, getResources().getString(R.string.wallet_money_source), 0, walletMsKey);
+                            String savingMsKey = mDatabase.child("money-source").push().getKey();
+                            MoneySource savingMs = new MoneySource(userId, getResources().getString(R.string.saving_money_source), 0, savingMsKey);
+
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/user-money-source/" + userId + "/" + walletMsKey, walletMs.toMap());
+                            childUpdates.put("/user-money-source/" + userId + "/" + savingMsKey, savingMs.toMap());
+                            mDatabase.updateChildren(childUpdates);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+        // [END single_value_read]
+    }
+
+    // Get username
+    private String getUsername(FirebaseUser user) {
+        // TODO delete
+//        if(user.getDisplayName()!=null){
+//            return user.getDisplayName();
+//        }
+
+        String email = user.getEmail();
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
     }
 }

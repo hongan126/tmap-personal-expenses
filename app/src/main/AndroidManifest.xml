@@ -16,7 +16,8 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"/>
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -54,20 +55,24 @@
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan"></activity>
         <activity
             android:name=".DiaryCrudActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
         <activity
             android:name=".AddMoneySourceActivity"
             android:layout_width="match_parent"
             android:label="@string/title_add_money_source"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
         <activity
             android:name=".PlanCrupActivity"
             android:label="@string/title_add_plan_activity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
-        <activity android:name=".DetailsReportActivity"></activity>
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"></activity>
+        <activity android:name=".DetailsReportActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"></activity>
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/background_5"
         android:orientation="vertical"
         android:paddingBottom="0dp"
         android:paddingLeft="@dimen/activity_vertical_margin"
@@ -24,13 +25,13 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="18sp"
             android:textStyle="bold" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/money_source_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
             android:clipToPadding="false"
-            android:padding="5dp"
             android:scrollbars="vertical"
             tools:listitem="@layout/item_plan" />
     </LinearLayout>

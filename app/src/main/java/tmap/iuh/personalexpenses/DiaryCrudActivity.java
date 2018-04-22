@@ -19,19 +19,23 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import fr.ganfra.materialspinner.MaterialSpinner;
 import tmap.iuh.personalexpenses.models.Diary;
+import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
 
 public class DiaryCrudActivity extends BaseActivity implements View.OnClickListener {
@@ -42,6 +46,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     private MaterialSpinner categorySpinner;
 
     private ArrayAdapter<String> moneySourceArrayAdapter;
+    private List<String> moneySourceKey;
     private MaterialSpinner moneySourceSpinner;
 
     private ArrayAdapter<String> neededLevelArrayAdapter;
@@ -73,32 +78,31 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     // [START declare_database_ref]
     private DatabaseReference mDatabase;
     // [END declare_database_ref]
+    final String userId = getUid();
+
+    //Key Bundle and Extra
+    public static final String EXTRA_DIARY_MODEL = "diary_model";
+    public static final String EXTRA_DIARY_KEY = "diary_key";
+    public static final String BUNDEL_DATA = "data";
+
+    //Data for DETAILS DIARY
+    private String mDiaryKey;
+    private Diary mDiaryModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary_crud);
 
+        // [START initialize_database_ref]
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        //For offline
+        mDatabase.keepSynced(true);
+        // [END initialize_database_ref]
+
+        //Description EditText
         mDescription = (EditText) findViewById(R.id.description_diary_edit_text);
-
-        //Set Array Adapter for Category Spinner
-        categoryArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.expense_category));
-        categoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner = (MaterialSpinner) findViewById(R.id.category_diary_spinner);
-        categorySpinner.setAdapter(categoryArrayAdapter);
-
-        //Set Array Adapter for Money Source Spinner
-        moneySourceArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.source_money));
-        moneySourceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        moneySourceSpinner = (MaterialSpinner) findViewById(R.id.money_source_spinner);
-        moneySourceSpinner.setAdapter(moneySourceArrayAdapter);
-
-        //Set Array Adapter for Needed level Spinner
-        neededLevelArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.needed_level));
-        neededLevelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        neededLevelSpinner = (MaterialSpinner) findViewById(R.id.needed_level_spinner);
-        neededLevelSpinner.setAdapter(neededLevelArrayAdapter);
-
 
         //[START date picker for Edit Text]
         mExpenseDate = (EditText) findViewById(R.id.date_diary_edit_text);
@@ -127,7 +131,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
         mAmountOfMoney = (EditText) findViewById(R.id.amount_diary_edit_text);
         mAmountOfMoney.addTextChangedListener(new MoneyTextWatcher(mAmountOfMoney));
         //[END View Amount Of Money]
-        mAmountOfMoneyLayout = (TextInputLayout)findViewById(R.id.layout_amount_diary_edit_text);
+        mAmountOfMoneyLayout = (TextInputLayout) findViewById(R.id.layout_amount_diary_edit_text);
 
 
         //Button add Listener
@@ -142,15 +146,6 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
         mDeleteEndBtn.setOnClickListener(this);
         mUpdateEndBtn.setOnClickListener(this);
 
-        // [START initialize_database_ref]
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        //For offline
-        mDatabase.keepSynced(true);
-        // [END initialize_database_ref]
-
-        //Set type of Diary Activity Todo edit or remove
-        setAddDiaryActivity(true);
-
         //TextView
         mExpenseTextView = (TextView) findViewById(R.id.expense_type_text_view);
         mIncomTextView = (TextView) findViewById(R.id.income_type_text_view);
@@ -163,6 +158,77 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                 setIncomeDiary(b);
             }
         });
+
+        //Set Array Adapter for Category Spinner (Default is Expense Category)
+        setCategorySpinner(R.array.expense_category);
+
+        //Set Array Adapter for Needed level Spinner
+        neededLevelArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.needed_level));
+        neededLevelArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        neededLevelSpinner = (MaterialSpinner) findViewById(R.id.needed_level_spinner);
+        neededLevelSpinner.setAdapter(neededLevelArrayAdapter);
+
+        //Set Array Adapter for Money Source Spinner
+        moneySourceSpinner = (MaterialSpinner) findViewById(R.id.money_source_spinner);
+        mDatabase.child("user-money-source").child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final List<String> msNameList = new ArrayList<String>();
+                moneySourceKey = new ArrayList<String>();
+
+                for (DataSnapshot moneySourceSnapshot : dataSnapshot.getChildren()) {
+                    String msName = moneySourceSnapshot.child("moneySourceName").getValue(String.class);
+                    msNameList.add(msName);
+                    moneySourceKey.add(moneySourceSnapshot.getKey());
+                }
+                if (moneySourceArrayAdapter != null) {
+                    moneySourceArrayAdapter = null;
+                }
+                moneySourceArrayAdapter = new ArrayAdapter<String>(DiaryCrudActivity.this, android.R.layout.simple_spinner_item, msNameList);
+                moneySourceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                moneySourceSpinner.setAdapter(moneySourceArrayAdapter);
+
+                //Get data if this isn't Add Diary
+                Bundle bundle = getIntent().getBundleExtra(BUNDEL_DATA);
+                if (bundle != null) {
+                    setAddDiaryActivity(false);
+                    mDiaryModel = (Diary) bundle.getSerializable(EXTRA_DIARY_MODEL);
+                    mDiaryKey = bundle.getString(EXTRA_DIARY_KEY);
+                    fillDataToLayout(mDiaryModel);
+                } else {
+                    setAddDiaryActivity(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        // Todo remove
+//        moneySourceArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.source_money));
+//        moneySourceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        moneySourceSpinner.setAdapter(moneySourceArrayAdapter);
+    }
+
+    //Fill data to layout if this is Details Diary
+    private void fillDataToLayout(Diary model) {
+        if (model == null) {
+            return;
+        }
+        setAmountOfMoney(model.amount);
+        mDescription.setText(model.description);
+        mExpenseDate.setText(model.date.get("init_date").toString());
+        if (model.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+            setIncomeDiary(true);
+
+        } else {
+            setIncomeDiary(false);
+            neededLevelSpinner.setSelection(neededLevelArrayAdapter.getPosition(model.needLevel) + 1);
+        }
+        categorySpinner.setSelection(categoryArrayAdapter.getPosition(model.category) + 1);
+        moneySourceSpinner.setSelection(moneySourceArrayAdapter.getPosition(model.moneySourceName) + 1);
+        mTypeLogSwitch.setChecked(isIncomeDiary());
     }
 
     private void updateExpenseDate() {
@@ -190,24 +256,38 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.finish_diarycrud_nav_button:
-                //Todo add action
-                finish();
-                break;
-            case R.id.add_diarycrud_end_button:
-                //Todo add action
                 Diary diary = getDiaryFromLayout();
                 if (diary == null) {
                     break;
                 }
-                submitDiary(diary);
+                if (isAddDiaryActivity()) {
+                    submitAddDiary(diary);
+                } else {
+                    submitUpdateDiary(diary, mDiaryKey);
+                }
+                finish();
+                break;
+            case R.id.add_diarycrud_end_button:
+                Diary diary2 = getDiaryFromLayout();
+                if (diary2 == null) {
+                    break;
+                }
+                submitAddDiary(diary2);
                 finish();
                 break;
             case R.id.delete_diarycrud_end_button:
-                //Todo add action
+                if (mDiaryKey.isEmpty()) {
+                    return;
+                }
+                submitDeleteDiary(mDiaryKey);
                 finish();
                 break;
             case R.id.update_diarycrud_end_button:
-                //Todo add action
+                Diary diary3 = getDiaryFromLayout();
+                if (diary3 == null) {
+                    break;
+                }
+                submitUpdateDiary(diary3, mDiaryKey);
                 finish();
                 break;
         }
@@ -239,24 +319,37 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     public void setIncomeDiary(boolean incomeDiary) {
         isIncomeDiary = incomeDiary;
         if (isIncomeDiary()) {
-            mExpenseTextView.setTextColor(getResources().getColor(R.color.lightGray));
+            mExpenseTextView.setTextColor(getResources().getColor(R.color.gray));
             mExpenseTextView.setTypeface(Typeface.DEFAULT);
             mIncomTextView.setTextColor(getResources().getColor(R.color.colorAccent));
             mIncomTextView.setTypeface(Typeface.DEFAULT_BOLD);
             mAmountOfMoney.setTextColor(getResources().getColor(R.color.colorAccent));
+            setCategorySpinner(R.array.income_category);
+            neededLevelSpinner.setVisibility(View.GONE);
+            moneySourceSpinner.setFloatingLabelText("Đến:");
         } else {
             mExpenseTextView.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
             mExpenseTextView.setTypeface(Typeface.DEFAULT_BOLD);
-            mIncomTextView.setTextColor(getResources().getColor(R.color.lightGray));
+            mIncomTextView.setTextColor(getResources().getColor(R.color.gray));
             mIncomTextView.setTypeface(Typeface.DEFAULT);
             mAmountOfMoney.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            setCategorySpinner(R.array.expense_category);
+            neededLevelSpinner.setVisibility(View.VISIBLE);
+            moneySourceSpinner.setFloatingLabelText("Từ:");
         }
     }
 
-    public void submitDiary(final Diary diary) {
+    //Set Array Adapter for Category Spinner
+    public void setCategorySpinner(int idStringArray) {
+        categoryArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(idStringArray));
+        categoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner = (MaterialSpinner) findViewById(R.id.category_diary_spinner);
+        categorySpinner.setAdapter(categoryArrayAdapter);
+    }
 
+
+    public void submitAddDiary(final Diary diary) {
         // [START single_value_read]
-        final String userId = getUid();
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -272,10 +365,87 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            // Write new post
+                            //Update user information
+                            updateUserInfoWhenAddDiary(diary, user);
+                            submitUpdateMoneySource(null, diary);
+
+                            // Write new Diary
                             String key = mDatabase.child("diary").push().getKey();
                             Map<String, Object> childUpdates = new HashMap<>();
                             childUpdates.put("/user-diary/" + userId + "/" + key, diary.toMap());
+                            mDatabase.updateChildren(childUpdates);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+        // [END single_value_read]
+    }
+
+    // [START delete diary by key]
+    public void submitDeleteDiary(final String diaryKey) {
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            // User is null, error out
+                            Log.e(TAG, "User " + userId + " is unexpectedly null");
+                            Toast.makeText(DiaryCrudActivity.this,
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            //Update user information
+                            updateUserInfoWhenDeleteDiary(mDiaryModel, user);
+                            submitUpdateMoneySource(mDiaryModel, null);
+
+                            // Delete diary by set value is null
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/user-diary/" + userId + "/" + diaryKey, null);
+                            mDatabase.updateChildren(childUpdates);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+    }
+    // [END delete diary by key]
+
+    public void submitUpdateDiary(final Diary diary, final String diaryKey) {
+        // [START single_value_read]
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            // User is null, error out
+                            Log.e(TAG, "User " + userId + " is unexpectedly null");
+                            Toast.makeText(DiaryCrudActivity.this,
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            //Update user information
+                            updateUserInfoWhenAddDiary(diary, user);
+                            updateUserInfoWhenDeleteDiary(mDiaryModel, user);
+                            submitUpdateMoneySource(mDiaryModel, diary);
+
+                            // Update Diray
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/user-diary/" + userId + "/" + diaryKey, diary.toMap());
                             mDatabase.updateChildren(childUpdates);
                         }
 
@@ -319,11 +489,13 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
             moneySourceSpinner.setError(null);
         }
 
-        if (needLevel <= 0) {
-            neededLevelSpinner.setError("Vui lòng chọn mức độ cần thiết.");
-            valid = false;
-        } else {
-            neededLevelSpinner.setError(null);
+        if (!isIncomeDiary()) {
+            if (needLevel <= 0) {
+                neededLevelSpinner.setError("Vui lòng chọn mức độ cần thiết.");
+                valid = false;
+            } else {
+                neededLevelSpinner.setError(null);
+            }
         }
 
         return valid;
@@ -334,19 +506,151 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
         int categoryPos = categorySpinner.getSelectedItemPosition();
         int moneySourcePos = moneySourceSpinner.getSelectedItemPosition();
         int needLevelPos = neededLevelSpinner.getSelectedItemPosition();
-        String date = mExpenseDate.getText().toString();
         if (!validateInput(amount, categoryPos, moneySourcePos, needLevelPos)) {
             return null;
         }
-
-        String category = categoryArrayAdapter.getItem(categoryPos-1);
-        String moneySource = moneySourceArrayAdapter.getItem(moneySourcePos-1);
-        String needLevel = neededLevelArrayAdapter.getItem(needLevelPos-1);
+        String date = mExpenseDate.getText().toString();
+        String category = categoryArrayAdapter.getItem(categoryPos - 1);
+        String moneySource = moneySourceArrayAdapter.getItem(moneySourcePos - 1);
+        String msid = moneySourceKey.get(moneySourcePos - 1);
+        String needLevel = " ";
+        if (!isIncomeDiary()) {
+            needLevel = neededLevelArrayAdapter.getItem(needLevelPos - 1);
+        }
         String description = mDescription.getText().toString();
         String typeLog = getResources().getString(R.string.expense_type);
         if (isIncomeDiary()) {
             typeLog = getResources().getString(R.string.income_type);
         }
-        return new Diary(getUid(), moneySource, getAmountOfMoney(), category, description, needLevel, typeLog, date);
+        return new Diary(getUid(), msid, moneySource, getAmountOfMoney(), category, description, needLevel, typeLog, date);
+    }
+
+    private void updateUserInfoWhenAddDiary(final Diary diary, User user) {
+        if (diary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+            user.setTotalBalance(user.totalBalance + diary.amount);
+            if (diary.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
+                user.setSavingBalance(user.savingBalance + diary.amount);
+            }
+        } else {
+            user.setTotalBalance(user.totalBalance - diary.amount);
+            if (diary.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
+                user.setSavingBalance(user.savingBalance - diary.amount);
+            }
+        }
+        mDatabase.child("users").child(userId).setValue(user);
+    }
+
+    private void updateUserInfoWhenDeleteDiary(final Diary diary, User user) {
+        if (diary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+            user.setTotalBalance(user.totalBalance - diary.amount);
+            if (diary.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
+                user.setSavingBalance(user.savingBalance - diary.amount);
+            }
+        } else {
+            user.setTotalBalance(user.totalBalance + diary.amount);
+            if (diary.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
+                user.setSavingBalance(user.savingBalance + diary.amount);
+            }
+        }
+        mDatabase.child("users").child(userId).setValue(user);
+
+        // [Start update balance money source]
+        mDatabase.child("user-money-source").child(userId).child(diary.msid).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        MoneySource msModel = dataSnapshot.getValue(MoneySource.class);
+
+                        // [START_EXCLUDE]
+                        if (msModel == null) {
+                            // Money source is null, error out
+                            Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
+                            Toast.makeText(DiaryCrudActivity.this,
+                                    "Error: could not fetch money source.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            if (diary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                msModel.currentBalance -= diary.amount;
+                            } else {
+                                msModel.currentBalance += diary.amount;
+                            }
+                            mDatabase.child("user-money-source").child(userId).child(diary.msid).setValue(msModel);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "updateBalanceMoneySource:onCancelled", databaseError.toException());
+                    }
+                });
+        // [END update balance money source]
+    }
+
+    private void submitUpdateMoneySource(final Diary oldDiary, final Diary newDiary) {
+        String moneySourceKey;
+        if(oldDiary!=null){
+            moneySourceKey = oldDiary.msid;
+        }else{
+            moneySourceKey = newDiary.msid;
+        }
+        // [Start update balance money source]
+        mDatabase.child("user-money-source").child(userId).child(moneySourceKey).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        MoneySource msModel = dataSnapshot.getValue(MoneySource.class);
+
+                        // [START_EXCLUDE]
+                        if (msModel == null) {
+                            // Money source is null, error out
+                            Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
+                            Toast.makeText(DiaryCrudActivity.this,
+                                    "Error: could not fetch money source.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            //When Add new Diary
+                            if (oldDiary == null && newDiary != null) {
+                                if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                    msModel.currentBalance += newDiary.amount;
+                                } else {
+                                    msModel.currentBalance -= newDiary.amount;
+                                }
+                                mDatabase.child("user-money-source").child(userId).child(newDiary.msid).setValue(msModel);
+                            }
+                            //When delete Diary
+                            if(oldDiary != null && newDiary == null){
+                                if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                    msModel.currentBalance -= oldDiary.amount;
+                                } else {
+                                    msModel.currentBalance += oldDiary.amount;
+                                }
+                                mDatabase.child("user-money-source").child(userId).child(oldDiary.msid).setValue(msModel);
+                            }
+                            //When update diary
+                            if(oldDiary != null && newDiary != null){
+                                if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                    msModel.currentBalance += newDiary.amount;
+                                } else {
+                                    msModel.currentBalance -= newDiary.amount;
+                                }
+                                if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                    msModel.currentBalance -= oldDiary.amount;
+                                } else {
+                                    msModel.currentBalance += oldDiary.amount;
+                                }
+                                mDatabase.child("user-money-source").child(userId).child(newDiary.msid).setValue(msModel);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "updateBalanceMoneySource:onCancelled", databaseError.toException());
+                    }
+                });
+        // [END update balance money source]
     }
 }

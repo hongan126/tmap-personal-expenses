@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_transfer_monsrc"
+        android:icon="@drawable/ic_nav_source_money_24dp"
+        android:title="@string/menu_transfer" />
+    <item
+        android:id="@+id/menu_remove_monsrc"
+        android:icon="@drawable/ic_delete_forever_white_24dp"
+        android:title="@string/menu_remove" />
+</menu>

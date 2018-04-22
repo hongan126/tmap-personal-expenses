@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,20 +22,36 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import tmap.iuh.personalexpenses.DiaryCrudActivity;
+import tmap.iuh.personalexpenses.MainActivity;
 import tmap.iuh.personalexpenses.R;
 import tmap.iuh.personalexpenses.models.Diary;
+import tmap.iuh.personalexpenses.models.MoneySource;
+import tmap.iuh.personalexpenses.models.User;
 import tmap.iuh.personalexpenses.viewholder.DiaryViewHolder;
 
 public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
+
+    private static final String TAG = "DiaryMgnFragment";
 
     private Spinner spinner;
     private ArrayAdapter<String> spinnerArrayAdapter;
@@ -47,9 +64,9 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
     private TextView mTvSavingMoney;
     private TextView mTvLimit;
 
-    private double balance = 300000.0;
-    private double savingAmount = 200000.0;
-    private double limit = 100000.0;
+    private double balance = -1.0;
+    private double savingAmount = -1.0;
+    private double limit = -1.0;
 
     private String hideBalanceStr;
 
@@ -70,6 +87,15 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_diary_mgn, container, false);
 
+        // [START create_database_reference]
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        //for offline
+        mDatabase.keepSynced(true);
+        // [END create_database_refserence]
+
+        mRecycler = rootView.findViewById(R.id.diary_list);
+        mRecycler.setHasFixedSize(true);
+
         rootView.findViewById(R.id.fab_new_diary).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,8 +114,7 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // Todo Change
-                Toast.makeText(getActivity(), spinnerArrayAdapter.getItem(i).toString(), Toast.LENGTH_LONG).show();
+                loadDiaryListBy(i);
             }
 
             @Override
@@ -108,18 +133,12 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
         mImgLimit.setOnClickListener(this);
 
         //Text view balance
-        mTvBalance = (TextView)rootView.findViewById(R.id.balance_diary_text_view);
-        mTvSavingMoney = (TextView)rootView.findViewById(R.id.saving_money_diary_text_view);
-        mTvLimit = (TextView)rootView.findViewById(R.id.limit_diary_text_view);
+        mTvBalance = (TextView) rootView.findViewById(R.id.balance_diary_text_view);
+        mTvSavingMoney = (TextView) rootView.findViewById(R.id.saving_money_diary_text_view);
+        mTvLimit = (TextView) rootView.findViewById(R.id.limit_diary_text_view);
 
-        // [START create_database_reference]
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        //for offline
-        mDatabase.keepSynced(true);
-        // [END create_database_refserence]
-
-        mRecycler = rootView.findViewById(R.id.diary_list);
-        mRecycler.setHasFixedSize(true);
+        //Load data balance
+        loadDataBalance();
 
         return rootView;
     }
@@ -140,8 +159,8 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void toggleBalances(ImageView eyeImg, TextView balanceView){
-        if(balanceView.getText().toString().equalsIgnoreCase(hideBalanceStr)){
+    public void toggleBalances(ImageView eyeImg, TextView balanceView) {
+        if (balanceView.getText().toString().equalsIgnoreCase(hideBalanceStr)) {
             eyeImg.setImageResource(R.drawable.ic_eye_gray_24dp);
             int i = balanceView.getId();
             switch (i) {
@@ -158,30 +177,30 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
                     balanceView.setText(convertMoneyToString(limit));
                     break;
             }
-        }
-        else{
+        } else {
             eyeImg.setImageResource(R.drawable.ic_eye_off_gray_24dp);
             balanceView.setText(hideBalanceStr);
         }
 
     }
 
-    private String convertMoneyToString(Double amount){
+    private String convertMoneyToString(Double amount) {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
         formatter.applyPattern("#,###,###,###");
-        return formatter.format((amount))+"đ";
+        //Todo change cho other currency
+        return formatter.format((amount)) + "đ";
     }
 
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//
-//
-//    }
+    //Parameter: selectedPostion
+    // 0: today
+    // 1: this month
+    // 2: all of diary list
+    private void loadDiaryListBy(int selectedPostion) {
+        //For reload list when selected diary filter
+        if (mAdapter != null) {
+            mAdapter.stopListening();
+        }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         // Set up Layout Manager, reverse layout
         mManager = new LinearLayoutManager(getActivity());
         mManager.setReverseLayout(true);
@@ -189,7 +208,20 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query
-        Query postsQuery = mDatabase.child("user-diary").child(getUid());
+        Query postsQuery;
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date mdate = new Date();
+        postsQuery = mDatabase.child("user-diary").child(getUid()).orderByChild("date/init_date").equalTo(df.format(mdate));
+        switch (selectedPostion) {
+            case 1:
+                Calendar cal = Calendar.getInstance();
+                postsQuery = mDatabase.child("user-diary").child(getUid())
+                        .orderByChild("date/month_year").equalTo((cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR));
+                break;
+            case 2:
+                postsQuery = mDatabase.child("user-diary").child(getUid());
+                break;
+        }
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Diary>()
                 .setQuery(postsQuery, Diary.class)
@@ -204,26 +236,32 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
 
             @Override
             protected void onBindViewHolder(DiaryViewHolder viewHolder, int position, final Diary model) {
-                final DatabaseReference postRef = getRef(position);
+                final DatabaseReference diaryRef = getRef(position);
+                final String diaryKey = diaryRef.getKey();
 
-                // Set click listener for the whole post view
-                final String postKey = postRef.getKey();
+                // Set click listener for the whole diary view
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Todo show details
-//                        Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-//                        intent.putExtra(PostDetailActivity.EXTRA_POST_KEY, postKey);
-//                        startActivity(intent);
+                        Intent intent = new Intent(getActivity(), DiaryCrudActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(DiaryCrudActivity.EXTRA_DIARY_MODEL, model);
+                        bundle.putString(DiaryCrudActivity.EXTRA_DIARY_KEY, diaryKey);
+                        intent.putExtra(DiaryCrudActivity.BUNDEL_DATA, bundle);
+                        startActivity(intent);
                     }
                 });
 
-
-                // Bind Post to ViewHolder, setting OnClickListener for the star button
+                // Bind Diary to ViewHolder
                 viewHolder.bindToDiary(model);
             }
         };
         mRecycler.setAdapter(mAdapter);
+
+        //For reload list when selected diary filter
+        if (mAdapter != null) {
+            mAdapter.startListening();
+        }
     }
 
     public String getUid() {
@@ -244,5 +282,52 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
         if (mAdapter != null) {
             mAdapter.stopListening();
         }
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+        mTvBalance.setText(convertMoneyToString(balance));
+    }
+
+    public double getSavingAmount() {
+        return savingAmount;
+    }
+
+    public void setSavingAmount(double savingAmount) {
+        this.savingAmount = savingAmount;
+        mTvSavingMoney.setText(convertMoneyToString(savingAmount));
+    }
+
+    public double getLimit() {
+        return limit;
+    }
+
+    public void setLimit(double limit) {
+        this.limit = limit;
+        mTvLimit.setText(convertMoneyToString(limit));
+    }
+
+    public void loadDataBalance(){
+        mDatabase.child("users").child(getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user != null) {
+                    setBalance(user.totalBalance);
+                    setSavingAmount(user.savingBalance);
+                    setLimit(user.limitAmount);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+            }
+        });
     }
 }

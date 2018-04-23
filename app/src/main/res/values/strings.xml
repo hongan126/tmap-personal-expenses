@@ -57,6 +57,11 @@
     <string name="remove_ms_cancel">Hủy bỏ</string>
     <string name="remove_ms_remove">Vẫn xóa</string>
 
+    <string name="warning_remove_ms_title">Không thể xóa</string>
+    <string name="warning_remove_ms_message">Xin lỗi vì sự bất tiện này.\nVí và tiết kiệm là nguồn tiền mặc định.\nBạn không thể xóa!</string>
+    <string name="warning_remove_ms_cancel">Ok</string>
+    <string name="warning_remove_ms_remove">Vẫn xóa</string>
+
     <string name="hide_balance_str">********đ</string>
 
     <string name="income_type">Thu</string>

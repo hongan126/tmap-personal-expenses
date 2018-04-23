@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -121,14 +122,31 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
         return rootView;
     }
 
-    public void showDialogRemoveMoneySource(final String moneySourceKey) {
+    public void showDialogRemoveMoneySource(final String moneySourceKey, final MoneySource model) {
         if(moneySourceKey.isEmpty()){
+            return;
+        }
+        if (model.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))
+                || model.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.wallet_money_source))){
+            AlertDialog.Builder builderWarning = new AlertDialog.Builder(getActivity());
+            builderWarning.setMessage(getResources().getString(R.string.warning_remove_ms_message));
+            builderWarning.setTitle(getResources().getString(R.string.warning_remove_ms_title));
+            builderWarning.setIcon(R.drawable.ic_warning_28p);
+            builderWarning.setNegativeButton(getResources().getString(R.string.warning_remove_ms_cancel),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog dialogWarning = builderWarning.create();
+            dialogWarning.show();
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getResources().getString(R.string.remove_ms_message));
         builder.setTitle(getResources().getString(R.string.remove_ms_title));
-        // builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setIcon(R.drawable.ic_warning_28p);
         builder.setNegativeButton(getResources().getString(R.string.remove_ms_cancel),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -141,7 +159,7 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        submitDeleteMoneySource(moneySourceKey);
+                        submitDeleteMoneySource(moneySourceKey, model);
                         Toast.makeText(getActivity(), "Xóa hoàn tất!", Toast.LENGTH_SHORT).show();
                         dialog.cancel();
                     }
@@ -245,7 +263,7 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
                                         Toast.makeText(getActivity(), "Transfer", Toast.LENGTH_SHORT).show();
                                         break;
                                     case R.id.menu_remove_monsrc:
-                                        showDialogRemoveMoneySource(moneySourceKey);
+                                        showDialogRemoveMoneySource(moneySourceKey, model);
                                         break;
                                 }
                                 return false;
@@ -281,7 +299,7 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
     }
 
     // [START delete money source by key]
-    public void submitDeleteMoneySource(final String moneySourceKey) {
+    public void submitDeleteMoneySource(final String moneySourceKey, final MoneySource moneySourceModel) {
         mDatabase.child("users").child(getUid()).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -297,8 +315,39 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            //Update user info
+                            user.setTotalBalance(user.totalBalance - moneySourceModel.currentBalance);
+                            mDatabase.child("users").child(userId).setValue(user);
+
+                            mDatabase.child("user-diary").child(userId).orderByChild("msid").equalTo(moneySourceKey).addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                    dataSnapshot.getRef().setValue(null);
+//                                    mDatabase.child("user-diary").child(userId).child(dataSnapshot.getKey()).setValue(null);
+                                }
+
+                                @Override
+                                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                                }
+
+                                @Override
+                                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                                }
+
+                                @Override
+                                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
                             // Delete money source by set value is null
-                            //Todo remove diary of this money source
                             Map<String, Object> childUpdates = new HashMap<>();
                             childUpdates.put("/user-money-source/" + userId + "/" + moneySourceKey, null);
                             mDatabase.updateChildren(childUpdates);

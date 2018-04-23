@@ -45,8 +45,8 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
         setContentView(R.layout.activity_add_money_source);
 
         //View
-        mNameOfMoneySource = (EditText)findViewById(R.id.moneysrc_name_edt_addms);
-        mNameOfMoneySourceLayout = (TextInputLayout)findViewById(R.id.layout_moneysrc_name_edt_addms);
+        mNameOfMoneySource = (EditText) findViewById(R.id.moneysrc_name_edt_addms);
+        mNameOfMoneySourceLayout = (TextInputLayout) findViewById(R.id.layout_moneysrc_name_edt_addms);
         mFirstBalanceLayout = (TextInputLayout) findViewById(R.id.layout_first_balance_edt_addms);
         //[START View Amount Of Money]
         mFirstBalance = (EditText) findViewById(R.id.first_balance_edt_addms);
@@ -64,18 +64,21 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
         // [END initialize_database_ref]
     }
 
-    private double getAmountOfMoney(){
+    private double getAmountOfMoney() {
         return Double.parseDouble(mFirstBalance.getText().toString().replaceAll("[$,.]", ""));
     }
 
-    private boolean validateInput(String name, String balance){
+    private boolean validateInput(String name, String balance) {
         boolean valid = true;
 
         if (name.isEmpty()) {
             mNameOfMoneySourceLayout.setError("Không để trống!");
             valid = false;
-        } else if (false) {
-            //Todo check name
+        } else if (name.equalsIgnoreCase(getResources().getString(R.string.wallet_money_source))) {
+            mNameOfMoneySourceLayout.setError("Đã có nguồn tiền '"+getResources().getString(R.string.wallet_money_source)+"'.");
+            valid = false;
+        } else if (name.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
+            mNameOfMoneySourceLayout.setError("Đã có nguồn tiền '"+getResources().getString(R.string.saving_money_source)+"'.");
             valid = false;
         } else {
             mNameOfMoneySourceLayout.setError(null);
@@ -84,7 +87,7 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
         if (balance.isEmpty()) {
             mFirstBalanceLayout.setError("Không để trống!");
             valid = false;
-        } else if (getAmountOfMoney()<0) {
+        } else if (getAmountOfMoney() < 0) {
             mFirstBalanceLayout.setError("Số tiền không thể âm!");
             valid = false;
         } else {
@@ -94,7 +97,7 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
         return valid;
     }
 
-    public void submitAddMoneySource(final MoneySource model){
+    public void submitAddMoneySource(final MoneySource model) {
         // [START single_value_read]
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -117,6 +120,10 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
                             Map<String, Object> childUpdates = new HashMap<>();
                             childUpdates.put("/user-money-source/" + userId + "/" + key, model.toMap());
                             mDatabase.updateChildren(childUpdates);
+
+                            //Update user info
+                            user.setTotalBalance(user.totalBalance + model.firstBalance);
+                            mDatabase.child("users").child(userId).setValue(user);
                         }
                     }
 
@@ -128,10 +135,10 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
         // [END single_value_read]
     }
 
-    private MoneySource getModelFromLayout(){
+    private MoneySource getModelFromLayout() {
         String moneySourceName = mNameOfMoneySource.getText().toString();
         String firstBalance = mFirstBalance.getText().toString();
-        if(!validateInput(moneySourceName, firstBalance)){
+        if (!validateInput(moneySourceName, firstBalance)) {
             return null;
         }
         return new MoneySource(userId, moneySourceName, getAmountOfMoney());
@@ -140,13 +147,13 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         int i = view.getId();
-        switch (i){
+        switch (i) {
             case R.id.cancel_add_moneysrc_button:
                 finish();
                 break;
             case R.id.finish_add_moneysrc_button:
                 MoneySource moneySource = getModelFromLayout();
-                if(moneySource==null){
+                if (moneySource == null) {
                     return;
                 }
                 submitAddMoneySource(moneySource);

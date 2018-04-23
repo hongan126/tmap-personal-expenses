@@ -589,68 +589,166 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void submitUpdateMoneySource(final Diary oldDiary, final Diary newDiary) {
-        String moneySourceKey;
-        if(oldDiary!=null){
-            moneySourceKey = oldDiary.msid;
-        }else{
-            moneySourceKey = newDiary.msid;
-        }
-        // [Start update balance money source]
-        mDatabase.child("user-money-source").child(userId).child(moneySourceKey).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        // Get user value
-                        MoneySource msModel = dataSnapshot.getValue(MoneySource.class);
+        if (oldDiary != null && newDiary != null) {
+            if ((oldDiary.msid).equalsIgnoreCase(newDiary.msid)) {
+                // [Start update balance money source ]
+                mDatabase.child("user-money-source").child(userId).child(oldDiary.msid).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                // Get user value
+                                MoneySource msModel = dataSnapshot.getValue(MoneySource.class);
 
-                        // [START_EXCLUDE]
-                        if (msModel == null) {
-                            // Money source is null, error out
-                            Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
-                            Toast.makeText(DiaryCrudActivity.this,
-                                    "Error: could not fetch money source.",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            //When Add new Diary
-                            if (oldDiary == null && newDiary != null) {
-                                if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
-                                    msModel.currentBalance += newDiary.amount;
+                                // [START_EXCLUDE]
+                                if (msModel == null) {
+                                    // Money source is null, error out
+                                    Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
+                                    Toast.makeText(DiaryCrudActivity.this,
+                                            "Error: could not fetch money source.",
+                                            Toast.LENGTH_SHORT).show();
                                 } else {
-                                    msModel.currentBalance -= newDiary.amount;
+                                    if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                        msModel.currentBalance -= oldDiary.amount;
+                                    } else {
+                                        msModel.currentBalance += oldDiary.amount;
+                                    }
+                                    if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                        msModel.currentBalance += newDiary.amount;
+                                    } else {
+                                        msModel.currentBalance -= newDiary.amount;
+                                    }
+                                    mDatabase.child("user-money-source").child(userId).child(oldDiary.msid).setValue(msModel);
                                 }
-                                mDatabase.child("user-money-source").child(userId).child(newDiary.msid).setValue(msModel);
                             }
-                            //When delete Diary
-                            if(oldDiary != null && newDiary == null){
-                                if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
-                                    msModel.currentBalance -= oldDiary.amount;
-                                } else {
-                                    msModel.currentBalance += oldDiary.amount;
-                                }
-                                mDatabase.child("user-money-source").child(userId).child(oldDiary.msid).setValue(msModel);
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w(TAG, "updateBalanceMoneySource:onCancelled", databaseError.toException());
                             }
-                            //When update diary
-                            if(oldDiary != null && newDiary != null){
-                                if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
-                                    msModel.currentBalance += newDiary.amount;
+                        });
+                // [END update balance money source]
+            } else {
+                //when update diary
+                // [Start update balance money source ]
+                mDatabase.child("user-money-source").child(userId).child(oldDiary.msid).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                // Get user value
+                                MoneySource msModel = dataSnapshot.getValue(MoneySource.class);
+
+                                // [START_EXCLUDE]
+                                if (msModel == null) {
+                                    // Money source is null, error out
+                                    Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
+                                    Toast.makeText(DiaryCrudActivity.this,
+                                            "Error: could not fetch money source.",
+                                            Toast.LENGTH_SHORT).show();
                                 } else {
-                                    msModel.currentBalance -= newDiary.amount;
+                                    if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                        msModel.currentBalance -= oldDiary.amount;
+                                    } else {
+                                        msModel.currentBalance += oldDiary.amount;
+                                    }
+                                    mDatabase.child("user-money-source").child(userId).child(oldDiary.msid).setValue(msModel);
                                 }
-                                if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
-                                    msModel.currentBalance -= oldDiary.amount;
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w(TAG, "updateBalanceMoneySource:onCancelled", databaseError.toException());
+                            }
+                        });
+                // [END update balance money source]
+
+                DatabaseReference mDatabaseSourceMoney;
+                // [START initialize_database_ref]
+                mDatabaseSourceMoney = FirebaseDatabase.getInstance().getReference();
+                //For offline
+                mDatabaseSourceMoney.keepSynced(true);
+                // [END initialize_database_ref]
+                mDatabaseSourceMoney.child("user-money-source").child(userId).child(newDiary.msid).addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                // Get user value
+                                MoneySource msModel = dataSnapshot.getValue(MoneySource.class);
+
+                                // [START_EXCLUDE]
+                                if (msModel == null) {
+                                    // Money source is null, error out
+                                    Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
+                                    Toast.makeText(DiaryCrudActivity.this,
+                                            "Error: could not fetch money source.",
+                                            Toast.LENGTH_SHORT).show();
                                 } else {
-                                    msModel.currentBalance += oldDiary.amount;
+                                    if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                        msModel.currentBalance += newDiary.amount;
+                                    } else {
+                                        msModel.currentBalance -= newDiary.amount;
+                                    }
+                                    mDatabase.child("user-money-source").child(userId).child(newDiary.msid).setValue(msModel);
                                 }
-                                mDatabase.child("user-money-source").child(userId).child(newDiary.msid).setValue(msModel);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w(TAG, "updateBalanceMoneySource:onCancelled", databaseError.toException());
+                            }
+                        });
+                // [END update balance money source]
+            }
+        } else {
+            //When add or delete diary
+            // [Start update balance money source]
+            String moneySourceKey;
+            if (oldDiary != null) {
+                moneySourceKey = oldDiary.msid;
+            } else {
+                moneySourceKey = newDiary.msid;
+            }
+            mDatabase.child("user-money-source").child(userId).child(moneySourceKey).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            // Get user value
+                            MoneySource msModel = dataSnapshot.getValue(MoneySource.class);
+
+                            // [START_EXCLUDE]
+                            if (msModel == null) {
+                                // Money source is null, error out
+                                Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
+                                Toast.makeText(DiaryCrudActivity.this,
+                                        "Error: could not fetch money source.",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                //When Add new Diary
+                                if (oldDiary == null && newDiary != null) {
+                                    if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                        msModel.currentBalance += newDiary.amount;
+                                    } else {
+                                        msModel.currentBalance -= newDiary.amount;
+                                    }
+                                    mDatabase.child("user-money-source").child(userId).child(newDiary.msid).setValue(msModel);
+                                }
+                                //When delete Diary
+                                if (oldDiary != null && newDiary == null) {
+                                    if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
+                                        msModel.currentBalance -= oldDiary.amount;
+                                    } else {
+                                        msModel.currentBalance += oldDiary.amount;
+                                    }
+                                    mDatabase.child("user-money-source").child(userId).child(oldDiary.msid).setValue(msModel);
+                                }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.w(TAG, "updateBalanceMoneySource:onCancelled", databaseError.toException());
-                    }
-                });
-        // [END update balance money source]
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.w(TAG, "updateBalanceMoneySource:onCancelled", databaseError.toException());
+                        }
+                    });
+            // [END update balance money source]
+        }
     }
 }

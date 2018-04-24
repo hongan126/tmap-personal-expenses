@@ -3,8 +3,6 @@ package tmap.iuh.personalexpenses.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,12 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,22 +26,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import tmap.iuh.personalexpenses.DiaryCrudActivity;
-import tmap.iuh.personalexpenses.MainActivity;
 import tmap.iuh.personalexpenses.R;
 import tmap.iuh.personalexpenses.models.Diary;
-import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
 import tmap.iuh.personalexpenses.viewholder.DiaryViewHolder;
 
@@ -245,9 +236,9 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), DiaryCrudActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable(DiaryCrudActivity.EXTRA_DIARY_MODEL, model);
-                        bundle.putString(DiaryCrudActivity.EXTRA_DIARY_KEY, diaryKey);
-                        intent.putExtra(DiaryCrudActivity.BUNDEL_DATA, bundle);
+                        bundle.putSerializable(DiaryCrudActivity.DIARY_MODEL, model);
+                        bundle.putString(DiaryCrudActivity.DIARY_KEY, diaryKey);
+                        intent.putExtra(DiaryCrudActivity.BUNDEL_DATA_FROM_DIARY_MGN, bundle);
                         startActivity(intent);
                     }
                 });

@@ -38,9 +38,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import tmap.iuh.personalexpenses.DiaryCrudActivity;
 import tmap.iuh.personalexpenses.PlanCrupActivity;
 import tmap.iuh.personalexpenses.R;
-import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.SavingPlan;
 import tmap.iuh.personalexpenses.models.User;
 import tmap.iuh.personalexpenses.viewholder.SavingPlanViewHolder;
@@ -246,8 +246,11 @@ public class PlanToSaveMoneyMgnFragment extends Fragment {
                             public boolean onMenuItemClick(MenuItem item) {
                                 switch (item.getItemId()) {
                                     case R.id.menu_add_diary_plan:
-                                        //handle menu1 click
-                                        Toast.makeText(getActivity(), "Add diary", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getActivity(), DiaryCrudActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable(DiaryCrudActivity.PLAN_FROM_MGN, model);
+                                        intent.putExtra(DiaryCrudActivity.BUNDEL_DATA_FORM_PLAN_MGN, bundle);
+                                        startActivity(intent);
                                         break;
                                     case R.id.menu_remove_plan:
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

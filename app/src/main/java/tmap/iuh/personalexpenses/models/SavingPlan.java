@@ -3,6 +3,7 @@ package tmap.iuh.personalexpenses.models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class SavingPlan {
+public class SavingPlan implements Serializable{
     public String uid;
     public String planName;
     public double targetAmount;

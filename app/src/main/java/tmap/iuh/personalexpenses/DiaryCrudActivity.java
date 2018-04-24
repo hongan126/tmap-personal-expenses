@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -19,7 +20,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
@@ -36,6 +36,7 @@ import java.util.Map;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import tmap.iuh.personalexpenses.models.Diary;
 import tmap.iuh.personalexpenses.models.MoneySource;
+import tmap.iuh.personalexpenses.models.SavingPlan;
 import tmap.iuh.personalexpenses.models.User;
 
 public class DiaryCrudActivity extends BaseActivity implements View.OnClickListener {
@@ -81,9 +82,11 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     final String userId = getUid();
 
     //Key Bundle and Extra
-    public static final String EXTRA_DIARY_MODEL = "diary_model";
-    public static final String EXTRA_DIARY_KEY = "diary_key";
-    public static final String BUNDEL_DATA = "data";
+    public static final String DIARY_MODEL = "diary_model";
+    public static final String DIARY_KEY = "diary_key";
+    public static final String BUNDEL_DATA_FROM_DIARY_MGN = "data";
+    public static final String BUNDEL_DATA_FORM_PLAN_MGN = "data_from_plan_mgn";
+    public static final String PLAN_FROM_MGN = "plan";
 
     //Data for DETAILS DIARY
     private String mDiaryKey;
@@ -189,13 +192,26 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                 moneySourceSpinner.setAdapter(moneySourceArrayAdapter);
 
                 //Get data if this isn't Add Diary
-                Bundle bundle = getIntent().getBundleExtra(BUNDEL_DATA);
+                Bundle bundle = getIntent().getBundleExtra(BUNDEL_DATA_FROM_DIARY_MGN);
                 if (bundle != null) {
                     setAddDiaryActivity(false);
-                    mDiaryModel = (Diary) bundle.getSerializable(EXTRA_DIARY_MODEL);
-                    mDiaryKey = bundle.getString(EXTRA_DIARY_KEY);
+                    mDiaryModel = (Diary) bundle.getSerializable(DIARY_MODEL);
+                    mDiaryKey = bundle.getString(DIARY_KEY);
                     fillDataToLayout(mDiaryModel);
                 } else {
+                    bundle = getIntent().getBundleExtra(BUNDEL_DATA_FORM_PLAN_MGN);
+                    if (bundle != null) {
+                        //[START FILL DATA] Fill data for add a plan to diary from PlanToSaveMoneyMgnFragment
+                        SavingPlan plan = (SavingPlan) bundle.getSerializable(PLAN_FROM_MGN);
+                        setAmountOfMoney(plan.savedAmount);
+                        String description = "Chi tiêu cho kế hoạch: " + plan.planName;
+                        mDescription.setText(description);
+                        neededLevelSpinner.setSelection(neededLevelArrayAdapter.getCount());
+                        categorySpinner.setSelection(2);
+                        moneySourceSpinner.setSelection(moneySourceArrayAdapter.getPosition(getString(R.string.saving_money_source)) + 1);
+                        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                        //[END FILL DATA] Fill data for add a plan to diary from PlanToSaveMoneyMgnFragment
+                    }
                     setAddDiaryActivity(true);
                 }
             }

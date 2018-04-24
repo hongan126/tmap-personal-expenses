@@ -7,6 +7,7 @@
     <string name="title_more_nav">Khác</string>
     <string name="title_add_money_source">Thêm nguồn tiền</string>
     <string name="title_add_plan_activity">Thêm kế hoạch</string>
+    <string name="title_transfer_activity">Chuyển khoản</string>
     <string name="loading">Loading…</string>
     <string name="facebook_app_id">1790505444345652</string>
     <string name="fb_login_protocol_scheme">fb1790505444345652</string>
@@ -61,6 +62,11 @@
     <string name="warning_remove_ms_message">Xin lỗi vì sự bất tiện này.\nVí và tiết kiệm là nguồn tiền mặc định.\nBạn không thể xóa!</string>
     <string name="warning_remove_ms_cancel">Ok</string>
     <string name="warning_remove_ms_remove">Vẫn xóa</string>
+
+    <string name="remove_plan_title">Xóa kế hoạch: %s</string>
+    <string name="remove_plan_message">Bạn chắc chắn muốn xóa?</string>
+    <string name="remove_plan_cancel">Hủy bỏ</string>
+    <string name="remove_plan_remove">Đồng ý</string>
 
     <string name="warning_add_saving_plan_title">Kế hoạch hiện tại chưa hoàn thành</string>
     <string name="warning_add_saving_plan_message">Bạn đang có một kế hoạch chưa hoàn thành.\nBạn không thể thêm kế hoạch mới.</string>

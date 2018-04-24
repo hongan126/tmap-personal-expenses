@@ -44,6 +44,7 @@ import java.util.Map;
 import tmap.iuh.personalexpenses.AddMoneySourceActivity;
 import tmap.iuh.personalexpenses.DiaryCrudActivity;
 import tmap.iuh.personalexpenses.R;
+import tmap.iuh.personalexpenses.TransferActivity;
 import tmap.iuh.personalexpenses.models.Diary;
 import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
@@ -259,8 +260,12 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
                             public boolean onMenuItemClick(MenuItem item) {
                                 switch (item.getItemId()) {
                                     case R.id.menu_transfer_monsrc:
-                                        //handle menu1 click
-                                        Toast.makeText(getActivity(), "Transfer", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(getActivity(), TransferActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable(TransferActivity.EXTRA_MS_MODEL, model);
+                                        bundle.putString(TransferActivity.EXTRA_MS_KEY, moneySourceKey);
+                                        intent.putExtra(TransferActivity.BUNDEL_MS_DATA, bundle);
+                                        startActivity(intent);
                                         break;
                                     case R.id.menu_remove_monsrc:
                                         showDialogRemoveMoneySource(moneySourceKey, model);

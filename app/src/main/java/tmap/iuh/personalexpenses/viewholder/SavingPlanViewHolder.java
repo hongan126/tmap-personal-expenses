@@ -39,7 +39,7 @@ public class SavingPlanViewHolder extends RecyclerView.ViewHolder {
             planProgress.setText(R.string.done);
             planProgress.setTextColor(Color.parseColor("#7cb342"));
         } else {
-            DecimalFormat f = new DecimalFormat("0.0");
+            DecimalFormat f = new DecimalFormat("0");
             Double progress = (model.savedAmount / model.targetAmount) * 100.0;
             String progressStr = f.format(progress) + "%";
             planProgress.setText(progressStr);

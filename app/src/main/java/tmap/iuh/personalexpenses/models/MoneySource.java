@@ -3,11 +3,12 @@ package tmap.iuh.personalexpenses.models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class MoneySource{
+public class MoneySource implements Serializable {
     public String uid; //User ID
     public String msid; //Money source ID
     public String moneySourceName;

@@ -6,18 +6,18 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".AppDatabaseOffline"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".AppDatabaseOffline">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"/>
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -55,24 +55,29 @@
         <activity
             android:name=".SignupActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustResize|adjustPan" />
         <activity
             android:name=".DiaryCrudActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".AddMoneySourceActivity"
             android:layout_width="match_parent"
             android:label="@string/title_add_money_source"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".PlanCrupActivity"
             android:label="@string/title_add_plan_activity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
-        <activity android:name=".DetailsReportActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".DetailsReportActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
+        <activity android:name=".TransferActivity"
+            android:label="@string/title_transfer_activity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:windowSoftInputMode="stateVisible|adjustPan"/>
     </application>
 
 </manifest>

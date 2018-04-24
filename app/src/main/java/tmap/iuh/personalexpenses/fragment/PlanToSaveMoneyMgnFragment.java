@@ -250,8 +250,28 @@ public class PlanToSaveMoneyMgnFragment extends Fragment {
                                         Toast.makeText(getActivity(), "Add diary", Toast.LENGTH_SHORT).show();
                                         break;
                                     case R.id.menu_remove_plan:
-                                        submitDeleteSavingPlan(savingPlanKey);
-                                        Toast.makeText(getActivity(), "Xóa hoàn tất", Toast.LENGTH_SHORT).show();
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                        builder.setMessage(getResources().getString(R.string.remove_plan_message));
+                                        builder.setTitle(getResources().getString(R.string.remove_plan_title, model.planName));
+                                        builder.setNegativeButton(getResources().getString(R.string.remove_plan_cancel),
+                                                new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.cancel();
+                                                    }
+                                                });
+                                        builder.setPositiveButton(getResources().getString(R.string.remove_plan_remove),
+                                                new DialogInterface.OnClickListener() {
+
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        submitDeleteSavingPlan(savingPlanKey);
+                                                        Toast.makeText(getActivity(), "Xóa hoàn tất!", Toast.LENGTH_SHORT).show();
+                                                        dialog.cancel();
+                                                    }
+                                                });
+                                        AlertDialog dialog = builder.create();
+                                        dialog.show();
                                         break;
                                 }
                                 return false;

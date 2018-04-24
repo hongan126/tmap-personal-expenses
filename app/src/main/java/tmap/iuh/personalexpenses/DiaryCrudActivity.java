@@ -125,7 +125,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                         myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-        //Set date now Todo edit
+        //Set date now
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         mExpenseDate.setText(df.format(Calendar.getInstance().getTime()));
         //[END create date picker]
@@ -221,10 +221,6 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
 
             }
         });
-        // Todo remove
-//        moneySourceArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.source_money));
-//        moneySourceArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        moneySourceSpinner.setAdapter(moneySourceArrayAdapter);
     }
 
     //Fill data to layout if this is Details Diary

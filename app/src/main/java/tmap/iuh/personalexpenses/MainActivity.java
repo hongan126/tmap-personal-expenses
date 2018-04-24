@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            //Todo use ViewPager
+            //Todo: should use ViewPager
             Fragment selectedFragment = null;
             switch (item.getItemId()) {
                 case R.id.nav_diary:

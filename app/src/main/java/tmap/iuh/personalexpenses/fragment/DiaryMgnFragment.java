@@ -156,15 +156,12 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
             int i = balanceView.getId();
             switch (i) {
                 case R.id.balance_diary_text_view:
-                    //Todo edit
                     balanceView.setText(convertMoneyToString(balance));
                     break;
                 case R.id.saving_money_diary_text_view:
-                    //Todo edit
                     balanceView.setText(convertMoneyToString(savingAmount));
                     break;
                 case R.id.limit_diary_text_view:
-                    //Todo edit
                     balanceView.setText(convertMoneyToString(limit));
                     break;
             }

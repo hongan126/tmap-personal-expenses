@@ -188,11 +188,9 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
             int i = balanceView.getId();
             switch (i) {
                 case R.id.balance_moneysrc_text_view:
-                    //Todo edit
                     balanceView.setText(convertMoneyToString(balance));
                     break;
                 case R.id.limit_moneysrc_text_view:
-                    //Todo edit
                     balanceView.setText(convertMoneyToString(limit));
                     break;
             }

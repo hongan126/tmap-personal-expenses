@@ -127,7 +127,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and Open MAIN ACTIVITY.
-        // TODO start other activity
         if (mAuth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
@@ -290,7 +289,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     // Get username
     private String getUsername(FirebaseUser user) {
-        // TODO delete
+        // TODO edit
 //        if(user.getDisplayName()!=null){
 //            return user.getDisplayName();
 //        }
@@ -309,8 +308,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         hideProgressDialog();
         // [END_EXCLUDE]
         Log.w(TAG, "signInWithCredential:failure", task.getException());
-        //TODO Delete
-        //Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
         Toast.makeText(LoginActivity.this,
                 "Đăng nhập thất bại!\nVui lòng kiểm tra lại tài khoản, mật khẩu và kết nối mạng của bạn.",
                 Toast.LENGTH_LONG).show();

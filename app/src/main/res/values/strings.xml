@@ -26,12 +26,6 @@
         <item>Không có cũng không sao</item>
     </string-array>
 
-    <!--Todo remove-->
-    <string-array name="source_money">
-        <item>Ví</item>
-        <item>Tiết kiệm</item>
-    </string-array>
-
     <string-array name="expense_category">
         <item>Ăn uống</item>
         <item>Dịch vụ sinh hoạt</item>

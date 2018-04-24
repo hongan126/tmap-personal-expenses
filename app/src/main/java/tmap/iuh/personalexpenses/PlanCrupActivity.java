@@ -206,9 +206,8 @@ public class PlanCrupActivity extends BaseActivity implements View.OnClickListen
                                     "Error: could not fetch user.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            // Write new Diary
+                            // Write new Plan
                             String key = mDatabase.child("saving-plan").push().getKey();
-                            //Todo check savedAmount
                             Map<String, Object> childUpdates = new HashMap<>();
                             childUpdates.put("/user-saving-plan/" + userId + "/" + key, model.toMap());
                             mDatabase.updateChildren(childUpdates);

@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import tmap.iuh.personalexpenses.fragment.DiaryMgnFragment;
 import tmap.iuh.personalexpenses.fragment.MoneySourceMgnFragment;
 import tmap.iuh.personalexpenses.fragment.MoreFuncFragment;
-import tmap.iuh.personalexpenses.fragment.PlanSavingMoneyMgnFragment;
+import tmap.iuh.personalexpenses.fragment.PlanToSaveMoneyMgnFragment;
 import tmap.iuh.personalexpenses.fragment.ReportFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new MoneySourceMgnFragment();
                     break;
                 case R.id.nav_plan:
-                    selectedFragment = new PlanSavingMoneyMgnFragment();
+                    selectedFragment = new PlanToSaveMoneyMgnFragment();
                     break;
                 case R.id.nav_report:
                     selectedFragment = new ReportFragment();

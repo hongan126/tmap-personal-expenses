@@ -253,6 +253,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
         int i = view.getId();
         switch (i) {
             case R.id.cancel_diarycrud_nav_button:
+                hideKeyboard(view);
                 finish();
                 break;
             case R.id.finish_diarycrud_nav_button:
@@ -265,6 +266,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     submitUpdateDiary(diary, mDiaryKey);
                 }
+                hideKeyboard(view);
                 finish();
                 break;
             case R.id.add_diarycrud_end_button:
@@ -273,6 +275,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                     break;
                 }
                 submitAddDiary(diary2);
+                hideKeyboard(view);
                 finish();
                 break;
             case R.id.delete_diarycrud_end_button:
@@ -280,6 +283,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                     return;
                 }
                 submitDeleteDiary(mDiaryKey);
+                hideKeyboard(view);
                 finish();
                 break;
             case R.id.update_diarycrud_end_button:
@@ -288,6 +292,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                     break;
                 }
                 submitUpdateDiary(diary3, mDiaryKey);
+                hideKeyboard(view);
                 finish();
                 break;
         }

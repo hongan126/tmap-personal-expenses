@@ -117,10 +117,12 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                         }
                     });
             // [END create_user_with_email]
+            hideKeyboard(view);
         }
 
         if (view.getId() == R.id.cancel_signup_button) {
             startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+            hideKeyboard(view);
             finish();
         }
     }

@@ -357,12 +357,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         switch (i) {
             case R.id.google_login_button:
                 signInWithGoogle();
+                hideKeyboard(v);
                 break;
             case R.id.login_button:
                 signInWithEmailPassword();
+                hideKeyboard(v);
                 break;
             case R.id.signup_button:
                 startActivity(new Intent(LoginActivity.this, SignupActivity.class));
+                hideKeyboard(v);
                 finish();
                 break;
         }

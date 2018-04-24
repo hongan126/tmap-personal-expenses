@@ -62,6 +62,14 @@
     <string name="warning_remove_ms_cancel">Ok</string>
     <string name="warning_remove_ms_remove">Vẫn xóa</string>
 
+    <string name="warning_add_saving_plan_title">Kế hoạch hiện tại chưa hoàn thành</string>
+    <string name="warning_add_saving_plan_message">Bạn đang có một kế hoạch chưa hoàn thành.\nBạn không thể thêm kế hoạch mới.</string>
+    <string name="warning_add_saving_plan_cancel">Ok</string>
+
+    <string name="notify_plan_done_title">Kế hoạch hoàn thành!</string>
+    <string name="notify_plan_done_message">Số dư trong khoản tiền kiệm đã đủ cho kế hoạch:\n%s.</string>
+    <string name="notify_plan_done_cancel">Ok</string>
+
     <string name="hide_balance_str">********đ</string>
 
     <string name="income_type">Thu</string>
@@ -70,6 +78,10 @@
     <string name="menu_remove">Xóa</string>
     <string name="menu_transfer">Chuyển khoản</string>
 
+    <string name="menu_add_diary">Thêm vào nhật ký</string>
+
     <string name="wallet_money_source">Ví</string>
     <string name="saving_money_source">Tiết kiệm</string>
+
+    <string name="done">hoàn thành</string>
 </resources>

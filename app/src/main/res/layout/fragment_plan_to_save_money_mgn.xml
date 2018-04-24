@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="56dp"
-    tools:context="tmap.iuh.personalexpenses.fragment.PlanSavingMoneyMgnFragment">
+    tools:context="tmap.iuh.personalexpenses.fragment.PlanToSaveMoneyMgnFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,8 +26,14 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/saving_tip_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="6dp" />
+
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/money_source_list"
+            android:id="@+id/saving_plan_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"

@@ -3,17 +3,38 @@ package tmap.iuh.personalexpenses;
 import android.app.DatePickerDialog;
 import android.support.design.widget.TextInputLayout;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import tmap.iuh.personalexpenses.fragment.PlanToSaveMoneyMgnFragment;
+import tmap.iuh.personalexpenses.models.MoneySource;
+import tmap.iuh.personalexpenses.models.SavingPlan;
+import tmap.iuh.personalexpenses.models.User;
 
 public class PlanCrupActivity extends BaseActivity implements View.OnClickListener {
+
+    private static final String TAG = "PlanCrupActivity";
 
     //Edit text
     private EditText mPlanNameEditText;
@@ -30,6 +51,13 @@ public class PlanCrupActivity extends BaseActivity implements View.OnClickListen
     private Button mFinishButton;
 
     private Calendar myCalendar = Calendar.getInstance();
+
+    // [START declare_database_ref]
+    private DatabaseReference mDatabase;
+    // [END declare_database_ref]
+    final String userId = getUid();
+
+    private Double amountOfSaved = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +101,13 @@ public class PlanCrupActivity extends BaseActivity implements View.OnClickListen
         mFinishButton = (Button) findViewById(R.id.finish_plan_button);
         mCancelButton.setOnClickListener(this);
         mFinishButton.setOnClickListener(this);
+
+        // [START initialize_database_ref]
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        //For offline
+        mDatabase.keepSynced(true);
+        // [END initialize_database_ref]
+
     }
 
     @Override
@@ -80,14 +115,20 @@ public class PlanCrupActivity extends BaseActivity implements View.OnClickListen
         int i = view.getId();
         switch (i) {
             case R.id.cancel_plan_button:
+                hideKeyboard(view);
                 finish();
                 break;
 
             case R.id.finish_plan_button:
-                if(!validateInput(mPlanNameEditText.getText().toString(), mTargetAmountEditText.getText().toString(), mDueDateEditText.getText().toString())){
+                String planName = mPlanNameEditText.getText().toString();
+                String targetAmount = mTargetAmountEditText.getText().toString();
+                String dueDate = mDueDateEditText.getText().toString();
+                if (!validateInput(planName, targetAmount, dueDate)) {
                     return;
                 }
-                //Todo add action
+                SavingPlan plan = new SavingPlan(getUid(), planName, getAmountOfTargetAmount(), dueDate);
+                submitAddSavingPlan(plan);
+                hideKeyboard(view);
                 finish();
                 break;
         }
@@ -120,8 +161,19 @@ public class PlanCrupActivity extends BaseActivity implements View.OnClickListen
             mTargetAmountLayout.setError(null);
         }
 
+        Date nowDate = new Date();
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date dueDate = new Date();
+        try {
+            dueDate = df.parse(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (date.isEmpty()) {
             mDueDateLayout.setError("Không để trống!");
+            valid = false;
+        } else if (nowDate.after(dueDate)) {
+            mDueDateLayout.setError("Ngày kết thúc phải sau ngày hôm nay.");
             valid = false;
         } else {
             mDueDateLayout.setError(null);
@@ -135,5 +187,39 @@ public class PlanCrupActivity extends BaseActivity implements View.OnClickListen
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
         mDueDateEditText.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    public void submitAddSavingPlan(final SavingPlan model) {
+        // [START single_value_read]
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // Get user value
+                        User user = dataSnapshot.getValue(User.class);
+
+                        // [START_EXCLUDE]
+                        if (user == null) {
+                            // User is null, error out
+                            Log.e(TAG, "User " + userId + " is unexpectedly null");
+                            Toast.makeText(PlanCrupActivity.this,
+                                    "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Write new Diary
+                            String key = mDatabase.child("saving-plan").push().getKey();
+                            //Todo check savedAmount
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/user-saving-plan/" + userId + "/" + key, model.toMap());
+                            mDatabase.updateChildren(childUpdates);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+                    }
+                });
+        // [END single_value_read]
     }
 }

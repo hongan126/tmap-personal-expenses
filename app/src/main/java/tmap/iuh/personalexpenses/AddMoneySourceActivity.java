@@ -149,6 +149,7 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
         int i = view.getId();
         switch (i) {
             case R.id.cancel_add_moneysrc_button:
+                hideKeyboard(view);
                 finish();
                 break;
             case R.id.finish_add_moneysrc_button:
@@ -157,6 +158,7 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
                     return;
                 }
                 submitAddMoneySource(moneySource);
+                hideKeyboard(view);
                 finish();
                 break;
         }

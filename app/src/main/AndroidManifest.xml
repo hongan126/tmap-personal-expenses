@@ -70,7 +70,7 @@
             android:name=".PlanCrupActivity"
             android:label="@string/title_add_plan_activity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"></activity>
+            android:windowSoftInputMode="stateVisible|adjustPan"></activity>
         <activity android:name=".DetailsReportActivity"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan"></activity>
     </application>

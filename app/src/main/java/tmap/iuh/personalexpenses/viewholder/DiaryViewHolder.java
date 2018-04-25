@@ -1,5 +1,6 @@
 package tmap.iuh.personalexpenses.viewholder;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -40,5 +41,15 @@ public class DiaryViewHolder extends RecyclerView.ViewHolder {
         formatter.applyPattern("#,###,###,###");
         amount.setText(formatter.format((diary.amount)));
         moneySource.setText(diary.moneySourceName);
+        if(diary.type.equalsIgnoreCase("Thu")){
+            typeDiary.setTextColor(Color.parseColor("#7cb342"));
+            category.setTextColor(Color.parseColor("#7cb342"));
+            amount.setTextColor(Color.parseColor("#7cb342"));
+        }else
+        {
+            typeDiary.setTextColor(Color.parseColor("#000000"));
+            category.setTextColor(Color.parseColor("#000000"));
+            amount.setTextColor(Color.parseColor("#000000"));
+        }
     }
 }

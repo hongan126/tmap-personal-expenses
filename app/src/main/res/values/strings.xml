@@ -80,6 +80,9 @@
 
     <string name="menu_add_diary">Thêm vào nhật ký</string>
 
+    <string name="menu_show_diary_list">Xem lại nhật ký</string>
+    <string name="menu_details">Phân tích chi tiêu</string>
+
     <string name="wallet_money_source">Ví</string>
     <string name="saving_money_source">Tiết kiệm</string>
 

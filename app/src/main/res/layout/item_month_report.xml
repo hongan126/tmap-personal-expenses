@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/image_button_item_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/head_month_report_item_textview"
@@ -32,7 +32,8 @@
             android:paddingBottom="4dp"
             android:paddingTop="6dp"
             android:text="Tháng 01/2018"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/black" />
     </RelativeLayout>
 
     <LinearLayout
@@ -75,7 +76,7 @@
             android:text="Tổng chi tiêu:" />
 
         <TextView
-            android:id="@+id/income_of_month_report_item_textview"
+            android:id="@+id/expense_of_month_report_item_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"

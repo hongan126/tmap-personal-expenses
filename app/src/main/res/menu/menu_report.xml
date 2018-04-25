@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_show_diary_list"
+        android:title="@string/menu_show_diary_list" />
+    <item
+        android:id="@+id/menu_details"
+        android:title="@string/menu_details" />
+</menu>

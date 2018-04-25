@@ -62,22 +62,31 @@
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".AddMoneySourceActivity"
+            android:screenOrientation="portrait"
             android:layout_width="match_parent"
             android:label="@string/title_add_money_source"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".PlanCrupActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_add_plan_activity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".DetailsReportActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
-        <activity android:name=".TransferActivity"
+        <activity
+            android:name=".TransferActivity"
             android:label="@string/title_transfer_activity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:windowSoftInputMode="stateVisible|adjustPan"/>
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".ListDiaryByMonthActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
     </application>
 
 </manifest>

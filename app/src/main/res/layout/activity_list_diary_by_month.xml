@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_3"
     android:orientation="vertical"
-    tools:context="tmap.iuh.personalexpenses.DetailsReportActivity">
+    tools:context="tmap.iuh.personalexpenses.ListDiaryByMonthActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <Button
-            android:id="@+id/back_nav_button_details_report"
+            android:id="@+id/back_nav_button_diary_list"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/header_month_of_report_textView"
+        android:id="@+id/month_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
@@ -47,18 +47,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Biểu đồ" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@color/whiteOpacity60"
         android:padding="6dp"
-        android:text="Xem lại các mục chi tiêu mà bạn có thể tiết kiệm:"
+        android:text="Nhật ký thu chi:"
         android:textColor="@color/black" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/expense_log_list"
+        android:id="@+id/diary_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
@@ -70,3 +65,5 @@
         tools:listitem="@layout/item_diary" />
 
 </LinearLayout>
+
+

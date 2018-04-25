@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import tmap.iuh.personalexpenses.DiaryCrudActivity;
 import tmap.iuh.personalexpenses.R;
@@ -202,12 +203,22 @@ public class DiaryMgnFragment extends Fragment implements View.OnClickListener {
         postsQuery = mDatabase.child("user-diary").child(getUid()).orderByChild("date/init_date").equalTo(df.format(mdate));
         switch (selectedPostion) {
             case 1:
-                Calendar cal = Calendar.getInstance();
+//                Calendar cal = Calendar.getInstance();
+//                postsQuery = mDatabase.child("user-diary").child(getUid())
+//                        .orderByChild("date/init_date").equalTo((cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR));
+                Calendar firstDateMonth = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"));
+                firstDateMonth.set(firstDateMonth.get(Calendar.YEAR), firstDateMonth.get(Calendar.MONTH), firstDateMonth.getActualMinimum(Calendar.DAY_OF_MONTH), 0,0,0);
+                firstDateMonth.set(Calendar.MILLISECOND, 0);
+
+                Calendar lastOfMonth = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"));
+                lastOfMonth.set(firstDateMonth.get(Calendar.YEAR), firstDateMonth.get(Calendar.MONTH), firstDateMonth.getActualMaximum(Calendar.DAY_OF_MONTH), 23,59,59);
+                lastOfMonth.set(Calendar.MILLISECOND, 999);
+
                 postsQuery = mDatabase.child("user-diary").child(getUid())
-                        .orderByChild("date/month_year").equalTo((cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.YEAR));
+                        .orderByChild("date/timestamp").startAt(firstDateMonth.getTimeInMillis()).endAt(lastOfMonth.getTimeInMillis());
                 break;
             case 2:
-                postsQuery = mDatabase.child("user-diary").child(getUid());
+                postsQuery = mDatabase.child("user-diary").child(getUid()).orderByChild("date/timestamp");
                 break;
         }
 

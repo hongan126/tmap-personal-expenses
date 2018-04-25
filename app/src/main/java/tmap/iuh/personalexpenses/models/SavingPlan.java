@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 @IgnoreExtraProperties
 public class SavingPlan implements Serializable{
@@ -35,7 +36,7 @@ public class SavingPlan implements Serializable{
         }catch (Exception e){
             e.printStackTrace();
         }
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"));
         cal.setTime(mdate);
         this.dueDate = new HashMap<>();
         this.dueDate.put("timestamp", cal.getTimeInMillis());

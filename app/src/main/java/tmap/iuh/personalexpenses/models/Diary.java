@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 @IgnoreExtraProperties
 public class Diary implements Serializable {
@@ -70,7 +71,7 @@ public class Diary implements Serializable {
         }catch (Exception e){
             e.printStackTrace();
         }
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+7:00"));
         cal.setTime(mdate);
         this.date = new HashMap<>();
         this.date.put("day", cal.get(Calendar.DAY_OF_MONTH));

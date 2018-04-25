@@ -36,6 +36,7 @@ import java.util.Map;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import tmap.iuh.personalexpenses.models.Diary;
 import tmap.iuh.personalexpenses.models.MoneySource;
+import tmap.iuh.personalexpenses.models.Report;
 import tmap.iuh.personalexpenses.models.SavingPlan;
 import tmap.iuh.personalexpenses.models.User;
 
@@ -198,6 +199,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                     mDiaryModel = (Diary) bundle.getSerializable(DIARY_MODEL);
                     mDiaryKey = bundle.getString(DIARY_KEY);
                     fillDataToLayout(mDiaryModel);
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                 } else {
                     bundle = getIntent().getBundleExtra(BUNDEL_DATA_FORM_PLAN_MGN);
                     if (bundle != null) {
@@ -367,15 +369,16 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
 
     public void submitAddDiary(final Diary diary) {
         // [START single_value_read]
+        final User[] user = new User[1];
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
-                        User user = dataSnapshot.getValue(User.class);
+                        user[0] = dataSnapshot.getValue(User.class);
 
                         // [START_EXCLUDE]
-                        if (user == null) {
+                        if (user[0] == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
                             Toast.makeText(DiaryCrudActivity.this,
@@ -383,8 +386,9 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             //Update user information
-                            updateUserInfoWhenAddDiary(diary, user);
+                            updateUserInfoWhenAddDiary(diary, user[0]);
                             submitUpdateMoneySource(null, diary);
+                            submitUpdateReport(null, diary);
 
                             // Write new Diary
                             String key = mDatabase.child("diary").push().getKey();
@@ -422,6 +426,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                             //Update user information
                             updateUserInfoWhenDeleteDiary(mDiaryModel, user);
                             submitUpdateMoneySource(mDiaryModel, null);
+                            submitUpdateReport(mDiaryModel, null);
 
                             // Delete diary by set value is null
                             Map<String, Object> childUpdates = new HashMap<>();
@@ -459,6 +464,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                             updateUserInfoWhenAddDiary(diary, user);
                             updateUserInfoWhenDeleteDiary(mDiaryModel, user);
                             submitUpdateMoneySource(mDiaryModel, diary);
+                            submitUpdateReport(mDiaryModel, diary);
 
                             // Update Diray
                             Map<String, Object> childUpdates = new HashMap<>();
@@ -766,6 +772,101 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                         }
                     });
             // [END update balance money source]
+        }
+    }
+
+    //
+    private void submitUpdateReport(final Diary oldDiary, final Diary newDiary) {
+        //Update report when update diary and date of diary don't change.
+        if(oldDiary!=null && newDiary!=null){
+            if(oldDiary.date.get("month_year").toString().equalsIgnoreCase(newDiary.date.get("month_year").toString())){
+                mDatabase.child("user-report").child(userId).orderByChild("monthYear").equalTo((String) oldDiary.date.get("month_year")).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                            DataSnapshot dataSnapshotReport = dataSnapshot.getChildren().iterator().next();
+                            Report report = dataSnapshotReport.getValue(Report.class);
+                            report.minusDiary(oldDiary);
+                            report.addDiary(newDiary);
+                            String key = dataSnapshotReport.getKey();
+                            Map<String, Object> childUpdates = new HashMap<>();
+                            childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
+                            mDatabase.updateChildren(childUpdates);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                return;
+            }
+        }
+        //For delete diary or udpate diary
+        if(oldDiary!=null){
+            mDatabase.child("user-report").child(userId).orderByChild("monthYear").equalTo((String) oldDiary.date.get("month_year")).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null) {
+                        Report report = new Report(userId, (String) oldDiary.date.get("month_year"), (Long) oldDiary.date.get("timestamp"));
+                        report.minusDiary(oldDiary);
+
+                        //Add report
+                        String key = mDatabase.child("reports").push().getKey();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
+                        mDatabase.updateChildren(childUpdates);
+                    } else {
+                        DataSnapshot dataSnapshotReport = dataSnapshot.getChildren().iterator().next();
+                        Report report = dataSnapshotReport.getValue(Report.class);
+                        report.minusDiary(oldDiary);
+                        String key = dataSnapshotReport.getKey();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        if(report.incomeTotal<=0 && report.expenseTotal<=0){
+                            //Delete report when this month don't have diary
+                            childUpdates.put("/user-report/" + userId + "/" + key, null);
+                        }else {
+                            childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
+                        }
+                        mDatabase.updateChildren(childUpdates);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+        //For add diary or update diary
+        if (newDiary != null) {
+            mDatabase.child("user-report").child(userId).orderByChild("monthYear").equalTo((String) newDiary.date.get("month_year")).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.getValue() == null) {
+                        Report report = new Report(userId, (String) newDiary.date.get("month_year"), (Long) newDiary.date.get("timestamp"));
+                        report.addDiary(newDiary);
+
+                        //Add report
+                        String key = mDatabase.child("reports").push().getKey();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
+                        mDatabase.updateChildren(childUpdates);
+                    } else {
+                        DataSnapshot dataSnapshotReport = dataSnapshot.getChildren().iterator().next();
+                        Report report = dataSnapshotReport.getValue(Report.class);
+                        report.addDiary(newDiary);
+                        String key = dataSnapshotReport.getKey();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
+                        mDatabase.updateChildren(childUpdates);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 }

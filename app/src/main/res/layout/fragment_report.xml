@@ -39,7 +39,7 @@
             android:text="Biểu đồ" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/money_source_list"
+            android:id="@+id/report_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"

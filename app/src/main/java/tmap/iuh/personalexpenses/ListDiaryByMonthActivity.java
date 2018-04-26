@@ -95,11 +95,11 @@ public class ListDiaryByMonthActivity extends BaseActivity{
         lastOfMonth.set(firstDateMonth.get(Calendar.YEAR), firstDateMonth.get(Calendar.MONTH), firstDateMonth.getActualMaximum(Calendar.DAY_OF_MONTH), 23,59,59);
         lastOfMonth.set(Calendar.MILLISECOND, 999);
 
-        Query postsQuery = mDatabase.child("user-diary").child(getUid())
+        Query diaryQuery = mDatabase.child("user-diary").child(getUid())
                 .orderByChild("date/timestamp").startAt(firstDateMonth.getTimeInMillis()).endAt(lastOfMonth.getTimeInMillis());
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Diary>()
-                .setQuery(postsQuery, Diary.class)
+                .setQuery(diaryQuery, Diary.class)
                 .build();
 
         mAdapter = new FirebaseRecyclerAdapter<Diary, DiaryViewHolder>(options) {

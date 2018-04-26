@@ -1,8 +1,6 @@
 package tmap.iuh.personalexpenses.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,24 +11,27 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.PopupMenu;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import tmap.iuh.personalexpenses.DetailsReportActivity;
 import tmap.iuh.personalexpenses.ListDiaryByMonthActivity;
 import tmap.iuh.personalexpenses.R;
-import tmap.iuh.personalexpenses.TransferActivity;
-import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.Report;
-import tmap.iuh.personalexpenses.viewholder.MoneySourceViewHolder;
 import tmap.iuh.personalexpenses.viewholder.ReportViewHolder;
 
 public class ReportFragment extends Fragment {
@@ -44,6 +45,9 @@ public class ReportFragment extends Fragment {
     // [END define_database_reference]
     private LinearLayoutManager mManager;
     final String userId = getUid();
+
+    private TextView mExpectedCostTextView;
+    private TextView mExpectedLabelTextView;
 
     public ReportFragment() {
         // Required empty public constructor
@@ -69,6 +73,10 @@ public class ReportFragment extends Fragment {
         mRecycler = rootView.findViewById(R.id.report_list);
         mRecycler.setHasFixedSize(true);
 
+        mExpectedCostTextView = (TextView) rootView.findViewById(R.id.expected_cost_for_next_month_edit_text);
+        mExpectedLabelTextView = (TextView) rootView.findViewById(R.id.label_expected_cost_text_view);
+        loadexpectedCost();
+
         return rootView;
     }
 
@@ -87,10 +95,10 @@ public class ReportFragment extends Fragment {
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query
-        Query postsQuery = mDatabase.child("user-report").child(getUid()).orderByChild("timestamp");
+        Query reportQuery = mDatabase.child("user-report").child(getUid()).orderByChild("timestamp");
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Report>()
-                .setQuery(postsQuery, Report.class)
+                .setQuery(reportQuery, Report.class)
                 .build();
 
         mAdapter = new FirebaseRecyclerAdapter<Report, ReportViewHolder>(options) {
@@ -167,5 +175,42 @@ public class ReportFragment extends Fragment {
         if (mAdapter != null) {
             mAdapter.stopListening();
         }
+    }
+
+    private void loadexpectedCost() {
+        //Get latest 4 months report
+        mDatabase.child("user-report").child(userId).orderByChild("timestamp").limitToLast(4).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getChildren().iterator().hasNext()) {
+                    int n = 0;
+                    double total = 0.0;
+                    for (DataSnapshot reportSnapshot : dataSnapshot.getChildren()) {
+                        Report model = reportSnapshot.getValue(Report.class);
+                        total += model.expenseTotal;
+                        n++;
+                    }
+
+                    double expectedCost = total/(double) n;
+
+                    DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+                    formatter.applyPattern("#,###,###,###");
+
+                    mExpectedCostTextView.setText((formatter.format((expectedCost)) + "đ"));
+                    mExpectedCostTextView.setVisibility(View.VISIBLE);
+                    mExpectedLabelTextView.setVisibility(View.VISIBLE);
+                    mExpectedLabelTextView.setText("Dự đoán chi phí cho tháng sau:");
+                } else {
+                    mExpectedCostTextView.setVisibility(View.GONE);
+                    mExpectedLabelTextView.setText("Nhật ký thu chi của bạn trống!!!");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 }

@@ -218,10 +218,10 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query
-        Query postsQuery = mDatabase.child("user-money-source").child(getUid());
+        Query moneySourceQuery = mDatabase.child("user-money-source").child(getUid());
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<MoneySource>()
-                .setQuery(postsQuery, MoneySource.class)
+                .setQuery(moneySourceQuery, MoneySource.class)
                 .build();
 
         mAdapter = new FirebaseRecyclerAdapter<MoneySource, MoneySourceViewHolder>(options) {

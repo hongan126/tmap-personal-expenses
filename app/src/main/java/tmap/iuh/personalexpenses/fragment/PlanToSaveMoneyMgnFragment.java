@@ -211,10 +211,10 @@ public class PlanToSaveMoneyMgnFragment extends Fragment {
         mRecycler.setLayoutManager(mManager);
 
         // Set up FirebaseRecyclerAdapter with the Query
-        Query postsQuery = mDatabase.child("user-saving-plan").child(getUid());
+        Query planQuery = mDatabase.child("user-saving-plan").child(getUid());
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<SavingPlan>()
-                .setQuery(postsQuery, SavingPlan.class)
+                .setQuery(planQuery, SavingPlan.class)
                 .build();
 
         mAdapter = new FirebaseRecyclerAdapter<SavingPlan, SavingPlanViewHolder>(options) {
@@ -348,8 +348,13 @@ public class PlanToSaveMoneyMgnFragment extends Fragment {
         if (hadPlan) {
             mSavingTips.setVisibility(View.VISIBLE);
         } else {
-            mSavingTips.setText("");
-            mSavingTips.setVisibility(View.GONE);
+            if(mAdapter.getItemCount()<=0){
+                mSavingTips.setVisibility(View.VISIBLE);
+                mSavingTips.setText("Hiện tại bạn chưa có kế hoạch nào!");
+            }else {
+                mSavingTips.setText("");
+                mSavingTips.setVisibility(View.GONE);
+            }
         }
     }
 

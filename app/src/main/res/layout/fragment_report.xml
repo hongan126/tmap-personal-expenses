@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background_4"
+        android:background="@drawable/background_5"
         android:orientation="vertical"
         android:paddingLeft="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_vertical_margin"
@@ -19,7 +19,7 @@
             android:id="@+id/label_expected_cost_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dự đoán chi phí cho tháng 2"
+            android:text="Dự đoán chi phí cho tháng sau:"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <TextView
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="200.000đ"
+            android:text="0đ"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorPrimaryDark"
             android:textStyle="bold" />

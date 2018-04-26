@@ -545,7 +545,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
         if (isIncomeDiary()) {
             typeLog = getResources().getString(R.string.income_type);
         }
-        return new Diary(getUid(), msid, moneySource, getAmountOfMoney(), category, description, needLevel, typeLog, date);
+        return new Diary(getUid(), msid, moneySource, getAmountOfMoney(), category, description, needLevel, needLevelPos, typeLog, date);
     }
 
     private void updateUserInfoWhenAddDiary(final Diary diary, User user) {

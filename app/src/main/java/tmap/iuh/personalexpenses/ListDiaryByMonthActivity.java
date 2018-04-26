@@ -64,7 +64,7 @@ public class ListDiaryByMonthActivity extends BaseActivity{
             mReportModel = (Report) bundle.getSerializable(EXTRA_MS_MODEL);
         }
         if (mReportModel != null) {
-            mReportHeader.setText(("Tháng " + mReportModel.monthYear));
+            mReportHeader.setText(("Nhật ký tháng " + mReportModel.monthYear));
         }
 
 

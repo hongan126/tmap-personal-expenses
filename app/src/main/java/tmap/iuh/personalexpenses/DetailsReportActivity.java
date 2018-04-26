@@ -67,7 +67,7 @@ public class DetailsReportActivity extends BaseActivity {
             mReportModel = (Report) bundle.getSerializable(EXTRA_MS_MODEL);
         }
         if (mReportModel != null) {
-            mReportHeader.setText(("Tháng " + mReportModel.monthYear));
+            mReportHeader.setText(("Phân tích chi tiêu tháng " + mReportModel.monthYear));
         }
 
         loadDiaryList();

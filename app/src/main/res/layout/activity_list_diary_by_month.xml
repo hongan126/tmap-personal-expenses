@@ -12,45 +12,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/whiteOpacity60"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/back_nav_button_diary_list"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:drawableStart="@drawable/ic_arrow_back_24dp"
             android:gravity="center_vertical|start"
             android:text="Trở lại"
             android:textAllCaps="false"
             android:textColor="@color/green" />
 
+        <TextView
+            android:id="@+id/month_header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center_vertical|center_horizontal"
+            android:paddingRight="12dp"
+            android:shadowColor="@color/white"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="2"
+            android:text="Tháng 02/2018"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/month_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal"
-        android:paddingBottom="5dp"
-        android:paddingTop="6dp"
-        android:shadowColor="@color/white"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="2"
-        android:text="Tháng 02/2018"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/whiteOpacity60"
-        android:padding="6dp"
-        android:text="Nhật ký thu chi:"
-        android:textColor="@color/black" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/diary_list"

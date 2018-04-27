@@ -31,7 +31,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="right|center_vertical"
+            android:paddingBottom="6dp"
             android:paddingRight="12dp"
+            android:paddingTop="6dp"
             android:shadowColor="@color/white"
             android:shadowDx="0"
             android:shadowDy="0"
@@ -43,10 +45,11 @@
 
     </LinearLayout>
 
-    <TextView
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Biểu đồ" />
+        android:layout_height="300dp"
+        android:layout_above="@+id/seekBar1" />
 
     <TextView
         android:layout_width="match_parent"

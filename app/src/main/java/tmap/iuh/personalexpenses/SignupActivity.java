@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
 
@@ -78,7 +79,7 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
             String passConfirm = mPassConfirmEditText.getText().toString();
             Log.d(TAG, "signIn:" + email);
 
-            if(!validateInput(email, password, passConfirm)){
+            if (!validateInput(email, password, passConfirm)) {
                 return;
             }
 
@@ -101,15 +102,16 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                                 writeNewUser(user.getUid(), username, user.getEmail());
 
                                 sendEmailVerification();
-                                Toast.makeText(SignupActivity.this, "Tạo tài khoản thành công.",
-                                        Toast.LENGTH_LONG).show();
+                                Toasty.success(SignupActivity.this, "Tạo tài khoản thành công.",
+                                        Toast.LENGTH_LONG, true).show();
                                 startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                 finish();
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(SignupActivity.this, "Quá trình đăng ký đã thất bại!\nCó thể email đã được đăng ký!\nVui lòng kiểm tra lại kết nối mạng.",
-                                        Toast.LENGTH_LONG).show();
+                                Toasty.error(SignupActivity.this,
+                                        "Quá trình đăng ký đã thất bại!\nCó thể email đã được đăng ký!\nVui lòng kiểm tra lại kết nối mạng.",
+                                        Toast.LENGTH_LONG, true).show();
                             }
                             // [START_EXCLUDE]
                             hideProgressDialog();
@@ -137,14 +139,14 @@ public class SignupActivity extends BaseActivity implements View.OnClickListener
                     public void onComplete(@NonNull Task<Void> task) {
                         // [START_EXCLUDE]
                         if (task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this,
+                            Toasty.success(SignupActivity.this,
                                     "Cảm ơn bạn, " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_SHORT, true).show();
                         } else {
                             Log.e(TAG, "sendEmailVerification", task.getException());
-                            Toast.makeText(SignupActivity.this,
+                            Toasty.warning(SignupActivity.this,
                                     "Có vẻ email của bạn không có thực?",
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_SHORT, true).show();
                         }
                         // [END_EXCLUDE]
                     }

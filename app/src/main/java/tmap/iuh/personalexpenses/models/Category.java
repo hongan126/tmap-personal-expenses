@@ -4,6 +4,18 @@ import java.util.HashMap;
 
 public class Category {
 
+    public static String[] mFieldKey = new String[] {
+            "foodAndDining", "utilities", "autoAndTransport", "personal",
+            "home", "clothing", "entertainment", "giftsAndDonations",
+            "healthAndFitness", "other"
+    };
+
+    public static String[] mFieldName = new String[] {
+            "Ăn uống", "Dịch vụ sinh hoạt", "Đi lại", "Phát triển bản thân",
+            "Nhà cửa", "Trang phục", "Hưởng thụ", "Hiếu hỉ",
+            "Sức khỏe", "Khác"
+    };
+
     public static String getFieldKey(String value) {
         switch (value) {
             case "Ăn uống":
@@ -29,6 +41,36 @@ public class Category {
             default:
                 return null;
         }
+    }
+
+    public static String getFieldName(String value) {
+        switch (value) {
+            case "foodAndDining":
+                return "Ăn uống";
+            case "utilities":
+                return "Dịch vụ sinh hoạt";
+            case "autoAndTransport":
+                return "Đi lại";
+            case "personal":
+                return "Phát triển bản thân";
+            case "home":
+                return "Nhà cửa";
+            case "clothing":
+                return "Trang phục";
+            case "entertainment":
+                return "Hưởng thụ";
+            case "giftsAndDonations":
+                return "Hiếu hỉ";
+            case "healthAndFitness":
+                return "Sức khỏe";
+            case "other":
+                return "Khác";
+            default:
+                return null;
+        }
+    }
+
+    private Category() {
     }
 
     //    private HashMap<String, Object> categoryMap;

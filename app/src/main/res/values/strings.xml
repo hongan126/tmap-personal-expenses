@@ -58,7 +58,8 @@
     <string name="warning_remove_ms_remove">Vẫn xóa</string>
 
     <string name="remove_plan_title">Xóa kế hoạch: %s</string>
-    <string name="remove_plan_message">Bạn chắc chắn muốn xóa?</string>
+    <string name="remove_diary_title">Xóa nhật ký này</string>
+    <string name="remove_message">Bạn chắc chắn muốn xóa?</string>
     <string name="remove_plan_cancel">Hủy bỏ</string>
     <string name="remove_plan_remove">Đồng ý</string>
 

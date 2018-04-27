@@ -41,6 +41,7 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
 
@@ -308,9 +309,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         hideProgressDialog();
         // [END_EXCLUDE]
         Log.w(TAG, "signInWithCredential:failure", task.getException());
-        Toast.makeText(LoginActivity.this,
-                "Đăng nhập thất bại!\nVui lòng kiểm tra lại tài khoản, mật khẩu và kết nối mạng của bạn.",
-                Toast.LENGTH_LONG).show();
+        Toasty.warning(LoginActivity.this, "Đăng nhập thất bại!\nVui lòng kiểm tra lại tài khoản, mật khẩu và kết nối mạng của bạn.", Toast.LENGTH_LONG, true).show();
     }
 
     // Write database user info

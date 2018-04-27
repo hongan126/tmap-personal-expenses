@@ -1,6 +1,8 @@
 package tmap.iuh.personalexpenses;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import tmap.iuh.personalexpenses.models.Diary;
 import tmap.iuh.personalexpenses.models.MoneySource;
@@ -263,7 +266,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         int i = view.getId();
         switch (i) {
             case R.id.cancel_diarycrud_nav_button:
@@ -277,8 +280,10 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                 }
                 if (isAddDiaryActivity()) {
                     submitAddDiary(diary);
+                    Toasty.success(DiaryCrudActivity.this, "Đã thêm!", Toast.LENGTH_SHORT, true).show();
                 } else {
                     submitUpdateDiary(diary, mDiaryKey);
+                    Toasty.success(DiaryCrudActivity.this, "Đã cập nhật!", Toast.LENGTH_SHORT, true).show();
                 }
                 hideKeyboard(view);
                 finish();
@@ -289,6 +294,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                     break;
                 }
                 submitAddDiary(diary2);
+                Toasty.success(DiaryCrudActivity.this, "Đã thêm!", Toast.LENGTH_SHORT, true).show();
                 hideKeyboard(view);
                 finish();
                 break;
@@ -296,9 +302,31 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                 if (mDiaryKey.isEmpty()) {
                     return;
                 }
-                submitDeleteDiary(mDiaryKey);
-                hideKeyboard(view);
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(DiaryCrudActivity.this);
+                builder.setMessage(getResources().getString(R.string.remove_message));
+                builder.setTitle(getResources().getString(R.string.remove_diary_title));
+                builder.setNegativeButton(getResources().getString(R.string.remove_plan_cancel),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                builder.setPositiveButton(getResources().getString(R.string.remove_plan_remove),
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                submitDeleteDiary(mDiaryKey);
+                                Toasty.success(DiaryCrudActivity.this, "Xóa hoàn tất!", Toast.LENGTH_SHORT, true).show();
+                                dialog.cancel();
+                                hideKeyboard(view);
+                                finish();
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 break;
             case R.id.update_diarycrud_end_button:
                 Diary diary3 = getDiaryFromLayout();
@@ -306,6 +334,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                     break;
                 }
                 submitUpdateDiary(diary3, mDiaryKey);
+                Toasty.success(DiaryCrudActivity.this, "Đã cập nhật!", Toast.LENGTH_SHORT, true).show();
                 hideKeyboard(view);
                 finish();
                 break;
@@ -381,9 +410,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                         if (user[0] == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(DiaryCrudActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(DiaryCrudActivity.this, "Error: could not fetch user.", Toast.LENGTH_SHORT, true).show();
                         } else {
                             //Update user information
                             updateUserInfoWhenAddDiary(diary, user[0]);
@@ -419,9 +446,8 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(DiaryCrudActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(DiaryCrudActivity.this, "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT, true).show();
                         } else {
                             //Update user information
                             updateUserInfoWhenDeleteDiary(mDiaryModel, user);
@@ -456,9 +482,8 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(DiaryCrudActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(DiaryCrudActivity.this, "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT, true).show();
                         } else {
                             //Update user information
                             updateUserInfoWhenAddDiary(diary, user);
@@ -589,9 +614,8 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                         if (msModel == null) {
                             // Money source is null, error out
                             Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
-                            Toast.makeText(DiaryCrudActivity.this,
-                                    "Error: could not fetch money source.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(DiaryCrudActivity.this, "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT, true).show();
                         } else {
 
                             if (diary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
@@ -626,9 +650,8 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                                 if (msModel == null) {
                                     // Money source is null, error out
                                     Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
-                                    Toast.makeText(DiaryCrudActivity.this,
-                                            "Error: could not fetch money source.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toasty.error(DiaryCrudActivity.this, "Error: could not fetch money source.",
+                                            Toast.LENGTH_SHORT, true).show();
                                 } else {
                                     if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
                                         msModel.currentBalance -= oldDiary.amount;
@@ -664,9 +687,8 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                                 if (msModel == null) {
                                     // Money source is null, error out
                                     Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
-                                    Toast.makeText(DiaryCrudActivity.this,
-                                            "Error: could not fetch money source.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toasty.error(DiaryCrudActivity.this, "Error: could not fetch money source.",
+                                            Toast.LENGTH_SHORT, true).show();
                                 } else {
                                     if (oldDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
                                         msModel.currentBalance -= oldDiary.amount;
@@ -701,9 +723,8 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                                 if (msModel == null) {
                                     // Money source is null, error out
                                     Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
-                                    Toast.makeText(DiaryCrudActivity.this,
-                                            "Error: could not fetch money source.",
-                                            Toast.LENGTH_SHORT).show();
+                                    Toasty.error(DiaryCrudActivity.this, "Error: could not fetch money source.",
+                                            Toast.LENGTH_SHORT, true).show();
                                 } else {
                                     if (newDiary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
                                         msModel.currentBalance += newDiary.amount;
@@ -741,9 +762,8 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
                             if (msModel == null) {
                                 // Money source is null, error out
                                 Log.e(TAG, "Money source " + dataSnapshot.getKey() + " is unexpectedly null");
-                                Toast.makeText(DiaryCrudActivity.this,
-                                        "Error: could not fetch money source.",
-                                        Toast.LENGTH_SHORT).show();
+                                Toasty.error(DiaryCrudActivity.this, "Error: could not fetch money source.",
+                                        Toast.LENGTH_SHORT, true).show();
                             } else {
                                 //When Add new Diary
                                 if (oldDiary == null && newDiary != null) {

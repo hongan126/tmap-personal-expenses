@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import tmap.iuh.personalexpenses.fragment.PlanToSaveMoneyMgnFragment;
 import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.SavingPlan;
@@ -202,9 +203,8 @@ public class PlanCrupActivity extends BaseActivity implements View.OnClickListen
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(PlanCrupActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(PlanCrupActivity.this, "Error: could not fetch user.",
+                                    Toast.LENGTH_SHORT, true).show();
                         } else {
                             // Write new Plan
                             String key = mDatabase.child("saving-plan").push().getKey();

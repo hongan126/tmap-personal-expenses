@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import tmap.iuh.personalexpenses.DiaryCrudActivity;
 import tmap.iuh.personalexpenses.PlanCrupActivity;
 import tmap.iuh.personalexpenses.R;
@@ -254,7 +255,7 @@ public class PlanToSaveMoneyMgnFragment extends Fragment {
                                         break;
                                     case R.id.menu_remove_plan:
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                        builder.setMessage(getResources().getString(R.string.remove_plan_message));
+                                        builder.setMessage(getResources().getString(R.string.remove_message));
                                         builder.setTitle(getResources().getString(R.string.remove_plan_title, model.planName));
                                         builder.setNegativeButton(getResources().getString(R.string.remove_plan_cancel),
                                                 new DialogInterface.OnClickListener() {
@@ -269,7 +270,7 @@ public class PlanToSaveMoneyMgnFragment extends Fragment {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         submitDeleteSavingPlan(savingPlanKey);
-                                                        Toast.makeText(getActivity(), "Xóa hoàn tất!", Toast.LENGTH_SHORT).show();
+                                                        Toasty.success(getActivity(), "Xóa hoàn tất!", Toast.LENGTH_SHORT, true).show();
                                                         dialog.cancel();
                                                     }
                                                 });
@@ -318,9 +319,7 @@ public class PlanToSaveMoneyMgnFragment extends Fragment {
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(getActivity(),
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(getActivity(), "Error: could not fetch user.", Toast.LENGTH_SHORT, true).show();
                         } else {
                             // Delete saving plan by set value is null
                             Map<String, Object> childUpdates = new HashMap<>();

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
@@ -172,9 +173,7 @@ public class TransferActivity extends BaseActivity implements View.OnClickListen
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(TransferActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(TransferActivity.this, "Error: could not fetch user.", Toast.LENGTH_SHORT, true).show();
                         } else {
                             msSourceModel.currentBalance -= amount;
                             msTargetModel.currentBalance += amount;
@@ -202,6 +201,6 @@ public class TransferActivity extends BaseActivity implements View.OnClickListen
                     }
                 });
         // [END single_value_read]
-        Toast.makeText(TransferActivity.this, "Chuyển khoản hoàn tất!", Toast.LENGTH_LONG).show();
+        Toasty.success(TransferActivity.this, "Chuyển khoản hoàn tất!", Toast.LENGTH_LONG, true).show();
     }
 }

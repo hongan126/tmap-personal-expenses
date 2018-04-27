@@ -41,6 +41,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import tmap.iuh.personalexpenses.AddMoneySourceActivity;
 import tmap.iuh.personalexpenses.DiaryCrudActivity;
 import tmap.iuh.personalexpenses.R;
@@ -161,7 +162,7 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         submitDeleteMoneySource(moneySourceKey, model);
-                        Toast.makeText(getActivity(), "Xóa hoàn tất!", Toast.LENGTH_SHORT).show();
+                        Toasty.success(getActivity(), "Xóa hoàn tất!", Toast.LENGTH_SHORT, true).show();
                         dialog.cancel();
                     }
                 });
@@ -314,9 +315,7 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(getActivity(),
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(getActivity(), "Error: could not fetch user.", Toast.LENGTH_SHORT, true).show();
                         } else {
                             //Update user info
                             user.setTotalBalance(user.totalBalance - moneySourceModel.currentBalance);

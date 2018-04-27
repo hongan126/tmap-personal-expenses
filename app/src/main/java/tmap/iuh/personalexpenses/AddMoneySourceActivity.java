@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import es.dmoral.toasty.Toasty;
 import tmap.iuh.personalexpenses.models.MoneySource;
 import tmap.iuh.personalexpenses.models.User;
 
@@ -110,9 +111,7 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
                         if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
-                            Toast.makeText(AddMoneySourceActivity.this,
-                                    "Error: could not fetch user.",
-                                    Toast.LENGTH_SHORT).show();
+                            Toasty.error(AddMoneySourceActivity.this, "Error: could not fetch user.", Toast.LENGTH_SHORT, true).show();
                         } else {
                             // Write new Diary
                             String key = mDatabase.child("money-source").push().getKey();
@@ -124,6 +123,8 @@ public class AddMoneySourceActivity extends BaseActivity implements View.OnClick
                             //Update user info
                             user.setTotalBalance(user.totalBalance + model.firstBalance);
                             mDatabase.child("users").child(userId).setValue(user);
+
+                            Toasty.success(AddMoneySourceActivity.this, "Đã thêm!", Toast.LENGTH_SHORT, true).show();
                         }
                     }
 

@@ -83,6 +83,9 @@ public class Report implements Serializable {
             if(this.category.get(fieldKey)!=null){
                 double newValue = Double.parseDouble(this.category.get(fieldKey).toString()) - model.amount;
                 this.category.put(fieldKey, newValue);
+                if(((double)this.category.get(fieldKey))<=0){
+                    this.category.remove(fieldKey);
+                }
             }
         }else{
             this.incomeTotal -= model.amount;

@@ -1,7 +1,12 @@
 package tmap.iuh.personalexpenses;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -14,11 +19,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Calendar;
+
 import tmap.iuh.personalexpenses.fragment.DiaryMgnFragment;
 import tmap.iuh.personalexpenses.fragment.MoneySourceMgnFragment;
 import tmap.iuh.personalexpenses.fragment.MoreFuncFragment;
 import tmap.iuh.personalexpenses.fragment.PlanToSaveMoneyMgnFragment;
 import tmap.iuh.personalexpenses.fragment.ReportFragment;
+import tmap.iuh.personalexpenses.notification.AlarmReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,6 +72,28 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new DiaryMgnFragment()).commit();
+        }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!prefs.getBoolean("notificationDiary", false)) {
+
+            Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, 20);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 1);
+
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("notificationDiary", true);
+            editor.apply();
         }
     }
 

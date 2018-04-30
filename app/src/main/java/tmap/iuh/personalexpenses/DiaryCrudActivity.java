@@ -573,6 +573,7 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void updateUserInfoWhenAddDiary(final Diary diary, User user) {
+
         if (diary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
             user.setTotalBalance((user.totalBalance + diary.amount));
             if (diary.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
@@ -797,19 +798,19 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
     //
     private void submitUpdateReport(final Diary oldDiary, final Diary newDiary) {
         //Update report when update diary and date of diary don't change.
-        if(oldDiary!=null && newDiary!=null){
-            if(oldDiary.date.get("month_year").toString().equalsIgnoreCase(newDiary.date.get("month_year").toString())){
+        if (oldDiary != null && newDiary != null) {
+            if (oldDiary.date.get("month_year").toString().equalsIgnoreCase(newDiary.date.get("month_year").toString())) {
                 mDatabase.child("user-report").child(userId).orderByChild("monthYear").equalTo((String) oldDiary.date.get("month_year")).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                            DataSnapshot dataSnapshotReport = dataSnapshot.getChildren().iterator().next();
-                            Report report = dataSnapshotReport.getValue(Report.class);
-                            report.minusDiary(oldDiary);
-                            report.addDiary(newDiary);
-                            String key = dataSnapshotReport.getKey();
-                            Map<String, Object> childUpdates = new HashMap<>();
-                            childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
-                            mDatabase.updateChildren(childUpdates);
+                        DataSnapshot dataSnapshotReport = dataSnapshot.getChildren().iterator().next();
+                        Report report = dataSnapshotReport.getValue(Report.class);
+                        report.minusDiary(oldDiary);
+                        report.addDiary(newDiary);
+                        String key = dataSnapshotReport.getKey();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
+                        mDatabase.updateChildren(childUpdates);
                     }
 
                     @Override
@@ -821,29 +822,20 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
             }
         }
         //For delete diary or udpate diary
-        if(oldDiary!=null){
+        if (oldDiary != null) {
             mDatabase.child("user-report").child(userId).orderByChild("monthYear").equalTo((String) oldDiary.date.get("month_year")).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.getValue() == null) {
-                        Report report = new Report(userId, (String) oldDiary.date.get("month_year"), (Long) oldDiary.date.get("timestamp"));
-                        report.minusDiary(oldDiary);
-
-                        //Add report
-                        String key = mDatabase.child("reports").push().getKey();
-                        Map<String, Object> childUpdates = new HashMap<>();
-                        childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
-                        mDatabase.updateChildren(childUpdates);
-                    } else {
+                    if (dataSnapshot.getValue() != null) {
                         DataSnapshot dataSnapshotReport = dataSnapshot.getChildren().iterator().next();
                         Report report = dataSnapshotReport.getValue(Report.class);
                         report.minusDiary(oldDiary);
                         String key = dataSnapshotReport.getKey();
                         Map<String, Object> childUpdates = new HashMap<>();
-                        if(report.incomeTotal<=0 && report.expenseTotal<=0){
+                        if (report.incomeTotal <= 0 && report.expenseTotal <= 0) {
                             //Delete report when this month don't have diary
                             childUpdates.put("/user-report/" + userId + "/" + key, null);
-                        }else {
+                        } else {
                             childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
                         }
                         mDatabase.updateChildren(childUpdates);

@@ -38,6 +38,9 @@ public class User {
     public void updateLimitAmount() {
         Calendar calendar = Calendar.getInstance();
         int numDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH) - calendar.get(Calendar.DAY_OF_MONTH);
+        if (numDays == 0) {
+            numDays = 1;
+        }
         this.limitAmount = (totalBalance - savingBalance) / numDays;
     }
 }

@@ -398,22 +398,21 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
 
     public void submitAddDiary(final Diary diary) {
         // [START single_value_read]
-        final User[] user = new User[1];
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
-                        user[0] = dataSnapshot.getValue(User.class);
+                        User user = dataSnapshot.getValue(User.class);
 
                         // [START_EXCLUDE]
-                        if (user[0] == null) {
+                        if (user == null) {
                             // User is null, error out
                             Log.e(TAG, "User " + userId + " is unexpectedly null");
                             Toasty.error(DiaryCrudActivity.this, "Error: could not fetch user.", Toast.LENGTH_SHORT, true).show();
                         } else {
                             //Update user information
-                            updateUserInfoWhenAddDiary(diary, user[0]);
+                            updateUserInfoWhenAddDiary(diary, user);
                             submitUpdateMoneySource(null, diary);
                             submitUpdateReport(null, diary);
 
@@ -575,14 +574,14 @@ public class DiaryCrudActivity extends BaseActivity implements View.OnClickListe
 
     private void updateUserInfoWhenAddDiary(final Diary diary, User user) {
         if (diary.type.equalsIgnoreCase(getResources().getString(R.string.income_type))) {
-            user.setTotalBalance(user.totalBalance + diary.amount);
+            user.setTotalBalance((user.totalBalance + diary.amount));
             if (diary.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
-                user.setSavingBalance(user.savingBalance + diary.amount);
+                user.setSavingBalance((user.savingBalance + diary.amount));
             }
         } else {
-            user.setTotalBalance(user.totalBalance - diary.amount);
+            user.setTotalBalance((user.totalBalance - diary.amount));
             if (diary.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))) {
-                user.setSavingBalance(user.savingBalance - diary.amount);
+                user.setSavingBalance((user.savingBalance - diary.amount));
             }
         }
         mDatabase.child("users").child(userId).setValue(user);

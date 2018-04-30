@@ -328,9 +328,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             mDatabase.child("users").child(userId).setValue(newUser);
                             
                             String walletMsKey = mDatabase.child("money-source").push().getKey();
-                            MoneySource walletMs = new MoneySource(userId, getResources().getString(R.string.wallet_money_source), 0, walletMsKey);
+                            MoneySource walletMs = new MoneySource(userId, getResources().getString(R.string.wallet_money_source), 0.0, walletMsKey);
                             String savingMsKey = mDatabase.child("money-source").push().getKey();
-                            MoneySource savingMs = new MoneySource(userId, getResources().getString(R.string.saving_money_source), 0, savingMsKey);
+                            MoneySource savingMs = new MoneySource(userId, getResources().getString(R.string.saving_money_source), 0.0, savingMsKey);
 
                             Map<String, Object> childUpdates = new HashMap<>();
                             childUpdates.put("/user-money-source/" + userId + "/" + walletMsKey, walletMs.toMap());

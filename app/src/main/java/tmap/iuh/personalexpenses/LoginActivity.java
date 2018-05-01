@@ -393,7 +393,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 if (task.isSuccessful()) {
                                     Toasty.success(LoginActivity.this, "Chúng tôi đã gửi email hướng dẫn đặt lại mật khẩu đến " + email, Toast.LENGTH_LONG).show();
                                 } else {
-                                    Toasty.error(LoginActivity.this, "Không thể gửi email!\nVui lòng kiểm tra lại email\nvà kế nối mạng của bạn!", Toast.LENGTH_LONG).show();
+                                    Toasty.error(LoginActivity.this, "Không thể gửi email!\nVui lòng kiểm tra lại email\nvà kết nối mạng của bạn!", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });

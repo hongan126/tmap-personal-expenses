@@ -68,6 +68,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // [START initialize_auth_and_database]
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        // [END initialize_auth_and_database]
+
         //Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -82,11 +87,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         findViewById(R.id.login_button).setOnClickListener(this);
         findViewById(R.id.google_login_button).setOnClickListener(this);
         findViewById(R.id.signup_button).setOnClickListener(this);
-
-        // [START initialize_auth_and_database]
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        // [END initialize_auth_and_database]
+        findViewById(R.id.forgot_password_button).setOnClickListener(this);
 
         // [START config_signin]
         // Configure Google Sign In
@@ -254,6 +255,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private boolean validateInput(String email, String password) {
         boolean valid = true;
 
+//        if (email.isEmpty()) {
+//            mEmailTextInputLayout.setError("Không để trống!");
+//            valid = false;
+//        } else if (!email.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
+//            mEmailTextInputLayout.setError("Email không đúng!");
+//            valid = false;
+//        } else {
+//            mEmailTextInputLayout.setError(null);
+//        }
+        valid = validateEmail(email);
+
+        if (password.isEmpty()) {
+            mPasswordTextInputLayout.setError("Không để trống!");
+            valid = false;
+        } else {
+            mPasswordTextInputLayout.setError(null);
+        }
+        return valid;
+    }
+
+    private boolean validateEmail(String email) {
+        boolean valid = true;
         if (email.isEmpty()) {
             mEmailTextInputLayout.setError("Không để trống!");
             valid = false;
@@ -262,13 +285,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             valid = false;
         } else {
             mEmailTextInputLayout.setError(null);
-        }
-
-        if (password.isEmpty()) {
-            mPasswordTextInputLayout.setError("Không để trống!");
-            valid = false;
-        } else {
-            mPasswordTextInputLayout.setError(null);
         }
         return valid;
     }
@@ -326,7 +342,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         if (user == null) {
                             User newUser = new User(name, email);
                             mDatabase.child("users").child(userId).setValue(newUser);
-                            
+
                             String walletMsKey = mDatabase.child("money-source").push().getKey();
                             MoneySource walletMs = new MoneySource(userId, getResources().getString(R.string.wallet_money_source), 0.0, walletMsKey);
                             String savingMsKey = mDatabase.child("money-source").push().getKey();
@@ -336,7 +352,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             childUpdates.put("/user-money-source/" + userId + "/" + walletMsKey, walletMs.toMap());
                             childUpdates.put("/user-money-source/" + userId + "/" + savingMsKey, savingMs.toMap());
                             mDatabase.updateChildren(childUpdates);
-                        } 
+                        }
                     }
 
                     @Override
@@ -363,6 +379,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 startActivity(new Intent(LoginActivity.this, SignupActivity.class));
                 hideKeyboard(v);
                 finish();
+                break;
+            case R.id.forgot_password_button:
+                final String email = mEmailEditText.getText().toString();
+                if (!validateEmail(email)) {
+                    return;
+                }
+                showProgressDialog();
+                mAuth.sendPasswordResetEmail(email)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toasty.success(LoginActivity.this, "Chúng tôi đã gửi email hướng dẫn đặt lại mật khẩu đến " + email, Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toasty.error(LoginActivity.this, "Không thể gửi email!\nVui lòng kiểm tra lại email\nvà kế nối mạng của bạn!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                hideProgressDialog();
+                hideKeyboard(v);
                 break;
         }
     }

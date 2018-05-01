@@ -48,6 +48,7 @@ import tmap.iuh.personalexpenses.R;
 import tmap.iuh.personalexpenses.TransferActivity;
 import tmap.iuh.personalexpenses.models.Diary;
 import tmap.iuh.personalexpenses.models.MoneySource;
+import tmap.iuh.personalexpenses.models.Report;
 import tmap.iuh.personalexpenses.models.User;
 import tmap.iuh.personalexpenses.viewholder.DiaryViewHolder;
 import tmap.iuh.personalexpenses.viewholder.MoneySourceViewHolder;
@@ -125,11 +126,11 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
     }
 
     public void showDialogRemoveMoneySource(final String moneySourceKey, final MoneySource model) {
-        if(moneySourceKey.isEmpty()){
+        if (moneySourceKey.isEmpty()) {
             return;
         }
         if (model.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.saving_money_source))
-                || model.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.wallet_money_source))){
+                || model.moneySourceName.equalsIgnoreCase(getResources().getString(R.string.wallet_money_source))) {
             AlertDialog.Builder builderWarning = new AlertDialog.Builder(getActivity());
             builderWarning.setMessage(getResources().getString(R.string.warning_remove_ms_message));
             builderWarning.setTitle(getResources().getString(R.string.warning_remove_ms_title));
@@ -324,7 +325,33 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
                             mDatabase.child("user-diary").child(userId).orderByChild("msid").equalTo(moneySourceKey).addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                    DataSnapshot dataSnapshot2 = dataSnapshot;
                                     dataSnapshot.getRef().setValue(null);
+                                    final Diary diary = dataSnapshot.getValue(Diary.class);
+                                    mDatabase.child("user-report").child(userId).orderByChild("monthYear").equalTo((String) diary.date.get("month_year")).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.getValue() != null) {
+                                                DataSnapshot dataSnapshotReport = dataSnapshot.getChildren().iterator().next();
+                                                Report report = dataSnapshotReport.getValue(Report.class);
+                                                report.minusDiary(diary);
+                                                String key = dataSnapshotReport.getKey();
+                                                Map<String, Object> childUpdates = new HashMap<>();
+                                                if (report.incomeTotal <= 0 && report.expenseTotal <= 0) {
+                                                    //Delete report when this month don't have diary
+                                                    childUpdates.put("/user-report/" + userId + "/" + key, null);
+                                                } else {
+                                                    childUpdates.put("/user-report/" + userId + "/" + key, report.toMap());
+                                                }
+                                                mDatabase.updateChildren(childUpdates);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
 //                                    mDatabase.child("user-diary").child(userId).child(dataSnapshot.getKey()).setValue(null);
                                 }
 
@@ -383,7 +410,7 @@ public class MoneySourceMgnFragment extends Fragment implements View.OnClickList
         mTvLimit.setText(convertMoneyToString(limit));
     }
 
-    public void loadDataBalance(){
+    public void loadDataBalance() {
         mDatabase.child("users").child(getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

@@ -22,9 +22,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // show toast
-        Toast.makeText(context, "Alarm running", Toast.LENGTH_SHORT).show();
-
         Intent notificationIntent = new Intent(context, MainActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
